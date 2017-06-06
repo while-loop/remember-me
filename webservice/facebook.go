@@ -6,12 +6,11 @@ import (
 	"net/url"
 	"strings"
 	"github.com/PuerkitoBio/goquery"
-	"fmt"
 )
 
 const (
 	httpscheme       = "https"
-	facebookdomain   = "facebook.com"
+	facebookhost     = "facebook.com"
 	facebooklogin    = "/login.php"
 	facebookchpasswd = "/settings/security/password/"
 )
@@ -119,20 +118,20 @@ func (f *FacebookWebservice) ChangePassword(email, oldpasswd, newpasswd string) 
 	body := f.browser.Body()
 	if strings.Contains(body, "Your password was incorrect") ||
 		strings.Contains(body, "Password must differ from old password") {
-		return ChangeError(facebookdomain, email, "Password must differ from old password")
+		return ChangeError(facebookhost, email, "Password must differ from old password")
 	}
 
 	return nil
 }
 
-func (f *FacebookWebservice) GetDomain() string {
-	return facebookdomain
+func (f *FacebookWebservice) GetHostname() string {
+	return facebookhost
 }
 
 func buildUrl(path string) *url.URL {
 	return &url.URL{
 		Scheme: httpscheme,
-		Host:   "m." + facebookdomain,
+		Host:   "m." + facebookhost,
 		Path:   path,
 	}
 }

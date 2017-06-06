@@ -4,11 +4,15 @@ import (
 	"fmt"
 )
 
+var (
+	DEFAULT_SERVICES = []Webservice{NewFacebookWebservice()}
+)
+
 type Webservice interface {
 	Login(email, password string) error
 	Logout() error
 	ChangePassword(email, oldpasswd, newpasswd string) error
-	GetDomain() string
+	GetHostname() string
 }
 
 // Test cases
@@ -24,20 +28,18 @@ type Webservice interface {
 // change pass same pass
 // change pass prev pass
 
-func ChangeError(website, email, message string) error {
-	return fmt.Errorf("Unable to change account %s password on website %s: %s", email, website, message)
+func ChangeError(hostname, email, message string) error {
+	return fmt.Errorf("Unable to change account %s password on hostname %s: %s", email, hostname, message)
 }
 
-func ParseError(website string) error {
-	return fmt.Errorf("Unable to parse website: %s", website)
+func ParseError(hostname string) error {
+	return fmt.Errorf("Unable to parse hostname: %s", hostname)
 }
 
-func ConnectError(website string) error {
-	return fmt.Errorf("Unable to connect to web service: %s", website)
+func ConnectError(hostname string) error {
+	return fmt.Errorf("Unable to connect to web service: %s", hostname)
 }
 
 func AccountError(email string) error {
 	return fmt.Errorf("Incorrect password for account %s", email)
 }
-
-

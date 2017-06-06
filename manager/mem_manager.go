@@ -37,7 +37,7 @@ func (m *MemManager) GetSites() []Site {
 	for host, emails := range m.passwds {
 		for email, passwd := range emails {
 			sites = append(sites, Site{
-				Domain:   host,
+				Hostname:   host,
 				Email:    email,
 				Password: passwd,
 			})
