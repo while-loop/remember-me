@@ -2,20 +2,36 @@ package manager
 
 import (
 	"github.com/mattn/lastpass-go"
-	"strings"
-	"net/url"
 	"log"
+	"net/url"
+	"strings"
 )
 
 type LastPassManager struct {
 	vault *lastpass.Vault
+	email string
+}
+
+const (
+	name = "lastpass"
+)
+
+func init() {
+	Register(name, func(email, password string) (Manager, error) {
+		return NewLastPassManager(email, password)
+	})
 }
 
 func NewLastPassManager(username, password string) (*LastPassManager, error) {
 	v, err := lastpass.CreateVault(username, password)
 	return &LastPassManager{
 		vault: v,
+		email: username,
 	}, err
+}
+
+func (lp LastPassManager) GetEmail() string {
+	return lp.email
 }
 
 func (lp *LastPassManager) GetPassword(hostname, email string) (string, error) {
@@ -41,7 +57,7 @@ func (lp *LastPassManager) GetSites() []Site {
 		}
 
 		sites = append(sites, Site{
-			Hostname: u.Hostname(),
+			Hostname: strings.ToLower(u.Hostname()),
 			Email:    acc.Username,
 			Password: acc.Password,
 		})

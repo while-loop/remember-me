@@ -1,22 +1,34 @@
-package main
+package remember
 
 import (
+	"./db"
 	"./manager"
 	"./webservice"
-	"./db"
+	"fmt"
+	"io"
 	"log"
-	"time"
 	"math/rand"
-	"net"
+	"strings"
 	"sync"
+	"time"
 )
+
+const (
+	Version = "0.0.1"
+)
+
+type PasswdFunc func() string
+
+var DefaultPasswdFunc = func() string {
+	return NewPasswordGen(32, true, true).Generate()
+}
 
 type App struct {
 	services  map[string]webservice.Webservice
 	datastore db.DataStore
 }
 
-func NewApp(datastore db.DataStore, services ... webservice.Webservice) *App {
+func NewApp(datastore db.DataStore, services ...webservice.Webservice) *App {
 	a := &App{
 		datastore: datastore,
 		services:  map[string]webservice.Webservice{},
@@ -25,26 +37,23 @@ func NewApp(datastore db.DataStore, services ... webservice.Webservice) *App {
 	return a
 }
 
-func (a *App) AddServices(services ... webservice.Webservice) {
+func (a *App) AddServices(services ...webservice.Webservice) {
 	for _, w := range services {
-		a.services[w.GetHostname()] = w
+		a.services[strings.ToLower(w.GetHostname())] = w
 	}
 }
 
-// TODO conn = websocket
-func (a *App) ChangePasswords(conn net.Conn, mngr manager.Manager) {
-
+// TODO out = websocket
+func (a *App) ChangePasswords(out io.Writer, mngr manager.Manager, passwdFunc PasswdFunc) {
 	sites := mngr.GetSites()
 
 	// mutex when updating log record
 	wg := sync.WaitGroup{}
-	lrmu := sync.Mutex{}
-	lr, err := a.datastore.AddLog(db.LogRecord{
+	lr, err := a.datastore.AddLog(&db.LogRecord{
 		Time:       time.Now(),
 		JobID:      rand.New(rand.NewSource(time.Now().UnixNano())).Uint64(),
-		User:       "email",
+		User:       mngr.GetEmail(),
 		TotalSites: uint(len(sites)),
-		Tries:      0,
 	})
 
 	if err != nil {
@@ -52,61 +61,47 @@ func (a *App) ChangePasswords(conn net.Conn, mngr manager.Manager) {
 	}
 
 	for _, site := range sites {
-		service := services[site.Hostname]
+		service := a.searchService(site.Hostname)
 		if service == nil {
-			lrmu.Lock()
-			lr.AddFailure(site.Hostname, site.Email, "Unsupported host", VERSION)
-			lrmu.Unlock()
+			lr.AddFailure(site.Hostname, site.Email, "Unsupported host", Version)
 			continue
 		}
+
 		wg.Add(1)
-		go func(goservice webservice.Webservice) {
-			lrmu.Lock()
-			lr.Tries++
-			lrmu.Unlock()
-			log.Println("Changing password for:", site.Hostname, site.Email)
+		go func(goservice webservice.Webservice, gosite manager.Site) {
+			lr.IncTries(1)
+			log.Println("Changing password for:", gosite.Hostname, gosite.Email)
 
-			err := service.Login(site.Email, site.Password)
+			err := goservice.ChangePassword(gosite.Email, gosite.Password, gosite.Password) //passwdFunc()) TODO
 			if err != nil {
 				log.Println(err)
-				lrmu.Lock()
-				lr.Fails++
-				lr.AddFailure(site.Hostname, site.Email, err.Error(), VERSION)
-				lrmu.Unlock()
+				lr.AddFailure(gosite.Hostname, gosite.Email, err.Error(), Version)
 				wg.Done()
 				return
 			}
-
-			err = service.ChangePassword(site.Email, site.Password, genPasswd())
-			if err != nil {
-				log.Println(err)
-				lrmu.Lock()
-				lr.Fails++
-				lr.AddFailure(site.Hostname, site.Email, err.Error(), VERSION)
-				lrmu.Unlock()
-				wg.Done()
-				return
-			}
-
-			err = service.Logout()
-			if err != nil {
-				log.Println(err)
-				lrmu.Lock()
-				lr.Fails++
-				lr.AddFailure(site.Hostname, site.Email, err.Error(), VERSION)
-				lrmu.Unlock()
-				wg.Done()
-				return
-			}
-
-
-			log.Println("Password changed for:", site.Hostname, site.Email)
-		}(service)
+			log.Println("Password changed for:", gosite.Hostname, gosite.Email)
+		}(service, site)
 	}
 
 	wg.Wait()
 	lr, err = a.datastore.UpdateLog(lr)
+	fmt.Println(lr.Tries(), "/", len(lr.Failures()), "/", lr.TotalSites)
 	if err != nil {
 		log.Println("Unable to save log", err, lr)
 	}
+}
+
+func (a *App) searchService(hostname string) webservice.Webservice {
+	hostname = strings.ToLower(hostname)
+	hostname = strings.TrimSpace(hostname)
+	if hostname == "" {
+		return nil
+	}
+	for key, val := range a.services {
+		if strings.Contains(key, hostname) || strings.Contains(hostname, key) {
+			return val
+		}
+	}
+
+	return nil
 }

@@ -7,12 +7,12 @@ func NewDynamoDB() *DynamoDB {
 	return &DynamoDB{}
 }
 
-func (d *DynamoDB) AddLog(record LogRecord) (LogRecord, error) {
+func (d *DynamoDB) AddLog(record *LogRecord) (*LogRecord, error) {
 	return record, nil
 }
 
-func (d *DynamoDB) UpdateLog(record LogRecord) (LogRecord, error) {
-	return nil, nil
+func (d *DynamoDB) UpdateLog(record *LogRecord) (*LogRecord, error) {
+	return record, nil
 }
 
 func (d *DynamoDB) GetServices() ([]string, error) {

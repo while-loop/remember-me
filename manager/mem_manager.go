@@ -23,6 +23,10 @@ func (m *MemManager) GetPassword(hostname, email string) (string, error) {
 	}
 }
 
+func (m *MemManager) GetEmail() string {
+	return "mem"
+}
+
 func (m *MemManager) SavePassword(hostname, email, password string) error {
 	if _, ok := m.passwds[hostname]; !ok {
 		m.passwds[hostname] = map[string]string{}
@@ -37,7 +41,7 @@ func (m *MemManager) GetSites() []Site {
 	for host, emails := range m.passwds {
 		for email, passwd := range emails {
 			sites = append(sites, Site{
-				Hostname:   host,
+				Hostname: host,
 				Email:    email,
 				Password: passwd,
 			})

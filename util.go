@@ -1,24 +1,18 @@
-package main
+package remember
 
 import (
+	"./db"
 	"./manager"
 	"./webservice"
-	"./db"
 	"log"
 )
 
 const (
 	MANAGER = "mem"
-	VERSION = "1.0.0"
-)
-
-var (
-	services = map[string]webservice.Webservice{}
-	mngr     manager.Manager
 )
 
 func main() {
-
+	var mngr manager.Manager
 	username := "test"
 	passwd := "test"
 
@@ -33,15 +27,11 @@ func main() {
 	}
 
 	if err != nil {
-		log.Println(webservice.AccountError(username))
+		log.Println(webservice.AccountError{username, MANAGER})
 	}
 
-	app := NewApp(db.NewDynamoDB(), webservice.DEFAULT_SERVICES...)
-	app.ChangePasswords(nil, mngr)
-}
-
-func genPasswd() string {
-	return "newpassword"
+	app := NewApp(db.NewDynamoDB(), webservice.Services()...)
+	app.ChangePasswords(nil, mngr, DefaultPasswdFunc)
 }
 
 func genData() manager.Manager {
