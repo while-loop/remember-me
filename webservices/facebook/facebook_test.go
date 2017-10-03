@@ -1,4 +1,4 @@
-package webservice
+package facebook
 
 import (
 	"github.com/stretchr/testify/assert"

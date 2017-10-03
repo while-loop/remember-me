@@ -1,10 +1,11 @@
-package manager
+package lastpass
 
 import (
 	"github.com/mattn/lastpass-go"
 	"log"
 	"net/url"
 	"strings"
+	"github.com/while-loop/remember-me/managers"
 )
 
 type LastPassManager struct {
@@ -17,7 +18,7 @@ const (
 )
 
 func init() {
-	Register(name, func(email, password string) (Manager, error) {
+	managers.Register(name, func(email, password string) (managers.Manager, error) {
 		return NewLastPassManager(email, password)
 	})
 }
@@ -41,22 +42,22 @@ func (lp *LastPassManager) GetPassword(hostname, email string) (string, error) {
 			return acc.Password, nil
 		}
 	}
-	return "", AccountDNE(hostname, email)
+	return "", managers.AccountDNE(hostname, email)
 }
 
 func (lp *LastPassManager) SavePassword(hostname, email, password string) error {
 	return nil
 }
 
-func (lp *LastPassManager) GetSites() []Site {
-	sites := []Site{}
+func (lp *LastPassManager) GetSites() []managers.Site {
+	sites := []managers.Site{}
 	for _, acc := range lp.vault.Accounts {
 		u, err := url.Parse(acc.Url)
 		if err != nil {
 			log.Println("Failed to parse URL: ", acc.Url, err)
 		}
 
-		sites = append(sites, Site{
+		sites = append(sites, managers.Site{
 			Hostname: strings.ToLower(u.Hostname()),
 			Email:    acc.Username,
 			Password: acc.Password,

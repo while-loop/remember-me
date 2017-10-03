@@ -16,6 +16,18 @@ Automatic password manager
 Update passwords from a given password manager solution at given
 intervals.
 
+Dependencies
+------------
+
+- [protoc](https://github.com/google/protobuf/releases) >= 3.4.0
+
+Building From Source
+------------
+
+```
+$ go generate ./...
+```
+
 Installation
 ------------
 

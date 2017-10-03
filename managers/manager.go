@@ -1,10 +1,17 @@
-package manager
+package managers
 
-import "fmt"
-
-var (
-	managers = map[string]RegisterFunc{}
+import (
+	"fmt"
+	"strings"
+	"sync"
 )
+
+var managers = struct {
+	sync.Mutex
+	m map[string]RegisterFunc
+}{
+	m: map[string]RegisterFunc{},
+}
 
 type RegisterFunc func(email, password string) (Manager, error)
 
@@ -16,16 +23,34 @@ type Manager interface {
 }
 
 func Register(name string, regFunc RegisterFunc) {
-	managers[name] = regFunc
+	managers.Lock()
+	defer managers.Unlock()
+
+	managers.m[name] = regFunc
 }
 
 func GetManager(name, username, password string) (Manager, error) {
-	val, exists := managers[name]
+	managers.Lock()
+	defer managers.Unlock()
+
+	name = strings.ToLower(name)
+	val, exists := managers.m[name]
 	if !exists {
 		return nil, fmt.Errorf("manager does not exist: %s", name)
 	}
 
 	return val(username, password)
+}
+
+func GetManagers() []string {
+	managers.Lock()
+	defer managers.Unlock()
+
+	mans := []string{}
+	for man := range managers.m {
+		mans = append(mans, man)
+	}
+	return mans
 }
 
 type Site struct {

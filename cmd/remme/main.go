@@ -1,24 +1,34 @@
 package main
 
 import (
-	"../../../remember-me"
+	"github.com/while-loop/remember-me"
 	"github.com/urfave/cli"
 	"os"
+	"sync"
 )
 
-var (
-	app = cli.NewApp()
-)
+var app = struct {
+	sync.Mutex
+	a *cli.App
+}{
+	a: cli.NewApp(),
+}
 
 func main() {
-	app.Name = "remember-me"
-	app.Description = "Automatic password changer"
-	app.Usage = app.Description
-	app.Version = remember.Version
-	app.HelpName = "remme"
-	app.Run(os.Args)
+	app.Lock()
+	app.a.Name = "remember-me"
+	app.a.Description = "Automatic password changer"
+	app.a.Usage = app.a.Description
+	app.a.Version = remme.Version
+	app.a.HelpName = "remme"
+	app.Unlock()
+
+	app.a.Run(os.Args)
 }
 
 func addCmd(cmd cli.Command) {
-	app.Commands = append(app.Commands, cmd)
+	app.Lock()
+	defer app.Unlock()
+
+	app.a.Commands = append(app.a.Commands, cmd)
 }

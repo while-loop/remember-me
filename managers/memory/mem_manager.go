@@ -1,4 +1,18 @@
-package manager
+package memory
+
+import (
+	"github.com/while-loop/remember-me/managers"
+)
+
+const (
+	name = "mem"
+)
+
+func init() {
+	managers.Register(name, func(email, password string) (managers.Manager, error) {
+		return NewMemManager(), nil
+	})
+}
 
 type MemManager struct {
 	// passwds[hostname][email] = password
@@ -13,11 +27,11 @@ func NewMemManager() *MemManager {
 
 func (m *MemManager) GetPassword(hostname, email string) (string, error) {
 	if _, ok := m.passwds[hostname]; !ok {
-		return "", AccountDNE(hostname, email)
+		return "", managers.AccountDNE(hostname, email)
 	}
 
 	if passwd, ok := m.passwds[hostname][email]; !ok {
-		return "", AccountDNE(hostname, email)
+		return "", managers.AccountDNE(hostname, email)
 	} else {
 		return passwd, nil
 	}
@@ -36,11 +50,11 @@ func (m *MemManager) SavePassword(hostname, email, password string) error {
 	return nil
 }
 
-func (m *MemManager) GetSites() []Site {
-	sites := []Site{}
+func (m *MemManager) GetSites() []managers.Site {
+	sites := []managers.Site{}
 	for host, emails := range m.passwds {
 		for email, passwd := range emails {
-			sites = append(sites, Site{
+			sites = append(sites, managers.Site{
 				Hostname: host,
 				Email:    email,
 				Password: passwd,

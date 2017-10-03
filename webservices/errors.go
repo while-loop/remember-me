@@ -1,4 +1,4 @@
-package webservice
+package webservices
 
 import "fmt"
 

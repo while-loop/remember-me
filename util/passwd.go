@@ -1,10 +1,11 @@
-package remember
+package util
 
 import (
 	"crypto/rand"
 	"bytes"
 	"math/big"
 	"fmt"
+	"github.com/while-loop/remember-me/api/services/v1/changer"
 	"os"
 )
 
@@ -30,6 +31,10 @@ func NewPasswordGen(len uint, specialChars, numbers bool) *PasswdGen {
 	}
 
 	return &PasswdGen{len, data.Bytes()}
+}
+
+func NewPasswordGenP(config *changer.PasswdConfig) *PasswdGen {
+	return NewPasswordGen(uint(config.Length), config.SpecialChars, config.Numbers)
 }
 
 func (p PasswdGen) Generate() string {

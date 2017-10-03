@@ -1,14 +1,12 @@
 package main
 
 import (
-	"../../../remember-me"
-	"../../../remember-me/db"
-	"../../../remember-me/manager"
-	"../../../remember-me/webservice"
+	"github.com/while-loop/remember-me"
+	"github.com/while-loop/remember-me/api/services/v1/changer"
 	"fmt"
 	"github.com/urfave/cli"
-	"os"
 	"strings"
+	"log"
 )
 
 func init() {
@@ -19,7 +17,10 @@ var changeCmd = cli.Command{
 	Name:    "change",
 	Aliases: []string{"ch"},
 	Flags: []cli.Flag{
-		cli.StringFlag{Name: "m, manager", Value: "lastpass"},
+		cli.StringFlag{
+			Name:  "m, manager",
+			Value: "lastpass",
+			Usage: "which account manager to use"},
 	},
 	Usage:     "change passwords for a given manager",
 	ArgsUsage: "[-m manager] <email> <password>",
@@ -30,15 +31,19 @@ var changeCmd = cli.Command{
 		}
 
 		manStr, email, password := strings.ToLower(c.String("m")), c.Args().Get(0), c.Args().Get(1)
-		man, err := manager.GetManager(manStr, email, password)
+		man, err := remme.GetManager(manStr, email, password)
 		if err != nil {
 			fmt.Fprint(c.App.ErrWriter, err)
 			return err
 		}
 
-		fmt.Printf("%v, %v", man.GetSites()[0].Hostname, man.GetSites()[0].Email)
-		app := remember.NewApp(db.Default, webservice.Services()...)
-		app.ChangePasswords(os.Stdout, man, remember.DefaultPasswdFunc)
+		app := remme.NewApp(remme.DefaultDB(), remme.WebServices())
+		statusChan := make(chan changer.Status)
+		go app.ChangePasswords(statusChan, man, remme.DefaultPasswdFunc)
+
+		for status := range statusChan {
+			log.Print(status)
+		}
 		return nil
 	},
 }

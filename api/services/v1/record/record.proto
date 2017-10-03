@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package record;
+
+// The greeting service definition.
+service Record {
+    rpc GetRecord (RecordRequest) returns (LogRecord) {
+    }
+}
+
+message RecordRequest {
+    uint64 jobId = 1;
+    uint32 since = 2;
+}
+
+message Failure {
+    string hostname = 1;
+    string email = 2;
+    string reason = 3;
+    string version = 4;
+}
+
+message LogRecord {
+    uint64 time = 1;
+    uint64 jobId = 2;
+    string email = 3;
+    uint64 tries = 4;
+    uint64 totalSites = 5;
+    repeated Failure failures = 6;
+}

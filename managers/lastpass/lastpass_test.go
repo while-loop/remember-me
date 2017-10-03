@@ -1,4 +1,4 @@
-package manager
+package lastpass
 
 import (
 	"github.com/stretchr/testify/assert"

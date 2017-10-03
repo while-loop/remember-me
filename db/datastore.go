@@ -3,17 +3,14 @@ package db
 import (
 	"time"
 	"sync"
+	"github.com/while-loop/remember-me/api/services/v1/record"
 )
 
 type DataStore interface {
 	AddLog(record *LogRecord) (*LogRecord, error)
 	UpdateLog(record *LogRecord) (*LogRecord, error)
-	GetServices() ([]string, error)
+	GetLog(jobId uint64) (*LogRecord, error)
 }
-
-var (
-	Default = NewDynamoDB()
-)
 
 type LogRecord struct {
 	Time  time.Time // timestamp
@@ -21,21 +18,14 @@ type LogRecord struct {
 	User  string    // remember-me user email
 
 	tmu        sync.Mutex
-	tries      uint // total amount of tries to change impl service pass
-	TotalSites uint // total amount of sites user has
+	tries      uint64 // total amount of tries to change impl service pass
+	TotalSites uint64 // total amount of sites user has
 
 	fmu      sync.Mutex
-	failures []Failure // failures when logging in, changing pass, or unimpl host
+	failures []*record.Failure // failures when logging in, changing pass, or unimpl host
 }
 
-type Failure struct {
-	Hostname string
-	Email    string
-	Reason   string
-	Version  string
-}
-
-func (lr *LogRecord) IncTries(amount uint) {
+func (lr *LogRecord) IncTries(amount uint64) {
 	lr.tmu.Lock()
 	defer lr.tmu.Unlock()
 	lr.tries += amount
@@ -45,7 +35,7 @@ func (lr *LogRecord) AddFailure(hostname, email, reason, version string) {
 	lr.fmu.Lock()
 	defer lr.fmu.Unlock()
 
-	lr.failures = append(lr.failures, Failure{
+	lr.failures = append(lr.failures, &record.Failure{
 		Hostname: hostname,
 		Email:    email,
 		Reason:   reason,
@@ -53,12 +43,12 @@ func (lr *LogRecord) AddFailure(hostname, email, reason, version string) {
 	})
 }
 
-func (lr *LogRecord) Failures() []Failure {
+func (lr *LogRecord) Failures() []*record.Failure {
 	lr.fmu.Lock()
 	defer lr.fmu.Unlock()
 	return lr.failures
 }
-func (lr *LogRecord) Tries() uint {
+func (lr *LogRecord) Tries() uint64 {
 	lr.tmu.Lock()
 	defer lr.tmu.Unlock()
 	return lr.tries
