@@ -47,7 +47,19 @@ import (
 
 
 func main() {
+    manStr, email, password := "lastpass", "email@email.com", "password"
+    mngr, err := remme.GetManager(manStr, email, password)
+    if err != nil {
+        log.fatalF(err)
+    }
 
+    app := remme.NewApp(remme.DefaultDB(), remme.WebServices())
+    statusChan := make(chan changer.Status)
+    go app.ChangePasswords(statusChan, man, remme.DefaultPasswdFunc)
+
+    for status := range statusChan {
+        log.Println(status)
+    }
 }
 
 ```

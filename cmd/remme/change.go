@@ -42,7 +42,7 @@ var changeCmd = cli.Command{
 		go app.ChangePasswords(statusChan, man, remme.DefaultPasswdFunc)
 
 		for status := range statusChan {
-			log.Print(status)
+			fmt.Fprintln(c.App.Writer, status)
 		}
 		return nil
 	},

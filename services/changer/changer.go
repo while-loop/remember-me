@@ -12,7 +12,7 @@ import (
 	"fmt"
 )
 
-//go:generate protoc -I ../../api/services/v1/changer/ --go_out=plugins=grpc:../../api/services/v1/changer/ ../../api/services/v1/changer/changer.proto
+//go:generate protoc -I ../../proto/ --go_out=plugins=grpc:../../api/services/v1/changer/ ../../proto/changer.proto
 
 func init() {
 	services.Register("changer", NewService)
