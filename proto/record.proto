@@ -2,10 +2,6 @@ syntax = "proto3";
 
 package record;
 
-option java_multiple_files = true;
-option java_package = "com.github.whileloop.services.record";
-option java_outer_classname = "RecordProto";
-
 // The greeting service definition.
 service Record {
     rpc GetRecord (RecordRequest) returns (LogRecord) {
