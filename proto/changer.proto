@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package changer;
 
+option java_multiple_files = true;
+option java_package = "com.github.whileloop.rememeberme.proto";
+option java_outer_classname = "ChangerProto";
+
 // The greeting service definition.
 service Changer {
     // Sends a greeting
