@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/urfave/cli"
 	"strings"
-	"log"
 )
 
 func init() {

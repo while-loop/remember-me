@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"io"
 	changer_pb "github.com/while-loop/remember-me/api/services/v1/changer"
 	"google.golang.org/grpc"
 	"context"
@@ -70,20 +69,15 @@ func grpcc(email, password string) {
 
 	stream, err := c.ChangePassword(context.Background(), req)
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatalln(err)
 	}
 
 	for {
-		r, err := stream.Recv()
-		if err == io.EOF {
-			fmt.Println("got eof", err)
-			break
-		} else if err != nil {
+		status, err := stream.Recv()
+		if err != nil {
 			fmt.Println("err", err)
 			break
 		}
-
-		fmt.Printf("client %v\n", r)
+		fmt.Printf("%v\n", status)
 	}
 }
