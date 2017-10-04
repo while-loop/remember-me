@@ -8,7 +8,7 @@ Remember Me
   <a href="https://travis-ci.org/while-loop/remember-me"><img src="https://img.shields.io/travis/while-loop/remember-me.svg?style=flat-square"></a>
   <a href="https://github.com/while-loop/remember-me/releases"><img src="https://img.shields.io/github/release/while-loop/remember-me.svg?style=flat-square"></a>
   <a href="https://coveralls.io/github/while-loop/remember-me"><img src="https://img.shields.io/coveralls/while-loop/remember-me.svg?style=flat-square"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license----blue.svg?style=flat-square"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPLv3-blue.svg?style=flat-square"></a>
 </p>
 
 Automatic password manager
@@ -39,21 +39,29 @@ Building From Source
 
 Compile protobuf objects
 ```
+$ go get -u github.com/while-loop/remember-me/
+$ cd $GOPATH/src/github.com/while-loop/remember-me/
 $ go generate ./...
 ```
 
 Installation
 ------------
 
-```
-$ go get github.com/while-loop/remember-me
+Install binaries
+```bash
+$ go get -u github.com/while-loop/remember-me/cmd/...
 ```
 
 Usage
 -----
 
-gRPC and package support
+#### gRPC & Package
 [Example](test/main.go)
+
+#### cli
+```bash
+$ remme -h
+```
 
 Changelog
 ---------
