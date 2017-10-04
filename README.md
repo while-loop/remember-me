@@ -16,7 +16,7 @@ Automatic password manager
 Remember Me is a proactive solution to keep passwords secure and fresh.
 With the push for Autofill services in browsers, password managers, and
 even [native mobile OS support](https://developer.android.com/guide/topics/text/autofill.html),
-the need to `remember` passwords become more obsolete.
+the need to `remember` passwords becomes more obsolete.
 
 Why Should I Use Remember Me
 ----------------------------
@@ -41,6 +41,7 @@ Compile protobuf objects
 ```
 $ go get -u github.com/while-loop/remember-me/
 $ cd $GOPATH/src/github.com/while-loop/remember-me/
+$ dep ensure
 $ go generate ./...
 ```
 
@@ -74,7 +75,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 License
 -------
 rememeber-me is licensed under the GNU Affero General Public License.
-See LICENSE for details.
+See [LICENSE](LICENSE) for details.
 
 Author
 ------
