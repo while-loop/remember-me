@@ -1,0 +1,12 @@
+[Unit]
+Description=Remember Me Service
+
+[Service]
+PIDFile=/tmp/remmed.pid
+User=remme
+Group=remme
+WorkingDirectory=/home/remme/remember-me/cmd/remmed
+ExecStart= /bin/go run ./...
+
+[Install]
+WantedBy=default.target
