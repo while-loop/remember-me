@@ -34,6 +34,9 @@ func NewPasswordGen(len uint, specialChars, numbers bool) *PasswdGen {
 }
 
 func NewPasswordGenP(config *changer.PasswdConfig) *PasswdGen {
+	if config == nil {
+		return NewPasswordGen(32, true, true)
+	}
 	return NewPasswordGen(uint(config.Length), config.SpecialChars, config.Numbers)
 }
 

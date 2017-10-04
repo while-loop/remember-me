@@ -9,7 +9,6 @@ import (
 	"google.golang.org/grpc"
 	"golang.org/x/net/context"
 	"github.com/while-loop/remember-me/managers"
-	"fmt"
 )
 
 //go:generate protoc -I ../../proto/ --go_out=plugins=grpc:../../api/services/v1/changer/ ../../proto/changer.proto
