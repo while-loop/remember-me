@@ -13,6 +13,19 @@ Remember Me
 
 Automatic password manager
 
+Remember Me is a proactive solution to keep passwords secure and fresh.
+With the push for Autofill services in browsers, password managers, and
+even [native mobile OS support](https://developer.android.com/guide/topics/text/autofill.html),
+the need to `remember` passwords become more obsolete.
+
+Why Should I Use Remember Me
+----------------------------
+
+- Proactively password resets
+- We do not store __any__ passwords in databases
+- Take advantage of Autofill services
+- Having too many dag nabbing emails & password combinations!
+
 Update passwords from a given password manager solution at given
 intervals.
 
@@ -24,6 +37,7 @@ Dependencies
 Building From Source
 ------------
 
+Compile protobuf objects
 ```
 $ go generate ./...
 ```
@@ -38,31 +52,8 @@ $ go get github.com/while-loop/remember-me
 Usage
 -----
 
-```go
-package main
-
-import (
-
-)
-
-
-func main() {
-    manStr, email, password := "lastpass", "email@email.com", "password"
-    mngr, err := remme.GetManager(manStr, email, password)
-    if err != nil {
-        log.fatalF(err)
-    }
-
-    app := remme.NewApp(remme.DefaultDB(), remme.WebServices())
-    statusChan := make(chan changer.Status)
-    go app.ChangePasswords(statusChan, man, remme.DefaultPasswdFunc)
-
-    for status := range statusChan {
-        log.Println(status)
-    }
-}
-
-```
+gRPC and package support
+[Example](test/main.go)
 
 Changelog
 ---------
@@ -74,7 +65,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 License
 -------
-TBD
+rememeber-me is licensed under the GNU Affero General Public License.
+See LICENSE for details.
 
 Author
 ------
