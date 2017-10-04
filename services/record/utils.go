@@ -1,8 +1,8 @@
 package record
 
 import (
-	"github.com/while-loop/remember-me/db"
 	api "github.com/while-loop/remember-me/api/services/v1/record"
+	"github.com/while-loop/remember-me/db"
 )
 
 func lr2Proto(lr *db.LogRecord) *api.LogRecord {

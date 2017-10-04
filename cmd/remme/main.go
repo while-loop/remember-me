@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/while-loop/remember-me"
 	"github.com/urfave/cli"
+	"github.com/while-loop/remember-me"
 	"os"
 	"sync"
 )

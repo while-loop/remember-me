@@ -1,16 +1,16 @@
 package remme
 
 import (
-	"github.com/while-loop/remember-me/db"
 	"fmt"
+	"github.com/while-loop/remember-me/api/services/v1/changer"
+	"github.com/while-loop/remember-me/db"
+	"github.com/while-loop/remember-me/managers"
+	"github.com/while-loop/remember-me/webservices"
 	"log"
 	"math/rand"
 	"strings"
 	"sync"
 	"time"
-	"github.com/while-loop/remember-me/webservices"
-	"github.com/while-loop/remember-me/managers"
-	"github.com/while-loop/remember-me/api/services/v1/changer"
 )
 
 type App struct {

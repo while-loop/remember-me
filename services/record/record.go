@@ -1,12 +1,12 @@
 package record
 
 import (
-	api "github.com/while-loop/remember-me/api/services/v1/record"
-	"github.com/while-loop/remember-me/services"
 	"github.com/while-loop/remember-me"
-	"google.golang.org/grpc"
+	api "github.com/while-loop/remember-me/api/services/v1/record"
 	"github.com/while-loop/remember-me/db"
+	"github.com/while-loop/remember-me/services"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 	"log"
 )
 
@@ -39,4 +39,3 @@ func (r *RecordService) GetRecord(ctx context.Context, req *api.RecordRequest) (
 
 	return lr2Proto(lr), nil
 }
-

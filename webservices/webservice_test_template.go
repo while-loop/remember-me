@@ -1,8 +1,8 @@
 package webservices
 
 import (
-	"testing"
 	_ "github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // Test cases

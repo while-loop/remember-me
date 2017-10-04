@@ -3,11 +3,11 @@ package facebook
 import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf/browser"
+	"github.com/while-loop/remember-me/util"
+	"github.com/while-loop/remember-me/webservices"
 	"gopkg.in/headzoo/surf.v1"
 	"net/url"
 	"strings"
-	"github.com/while-loop/remember-me/util"
-	"github.com/while-loop/remember-me/webservices"
 )
 
 const (
@@ -93,7 +93,7 @@ func (f *FacebookWebservice) changePassword(browsr *browser.Browser, email, oldp
 
 	err := browsr.Open(fUrl.String())
 	if err != nil {
-		return webservices.ConnectError{fUrl.String()}
+		return webservices.ConnectError{Hostname: fUrl.String()}
 	}
 
 	fm, err := browsr.Form("form[method=post]")

@@ -4,15 +4,15 @@ package main
 // currently only serves gRPC
 
 import (
-	"net"
-	"log"
-	"google.golang.org/grpc/reflection"
-	"google.golang.org/grpc"
-	"github.com/while-loop/remember-me"
-	"github.com/while-loop/remember-me/services"
-	"github.com/while-loop/remember-me/db/dynamodb"
 	"github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/while-loop/remember-me"
+	"github.com/while-loop/remember-me/db/dynamodb"
+	"github.com/while-loop/remember-me/services"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"log"
+	"net"
 	"net/http"
 )
 

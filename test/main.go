@@ -1,17 +1,18 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"log"
+	"github.com/while-loop/remember-me"
 	changer_pb "github.com/while-loop/remember-me/api/services/v1/changer"
 	"google.golang.org/grpc"
-	"context"
-	"github.com/while-loop/remember-me"
+	"log"
 )
+
 // grpc services
 import (
-	_"github.com/while-loop/remember-me/services/changer"
-	_"github.com/while-loop/remember-me/services/record"
+	_ "github.com/while-loop/remember-me/services/changer"
+	_ "github.com/while-loop/remember-me/services/record"
 )
 
 // managers

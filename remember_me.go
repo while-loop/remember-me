@@ -1,10 +1,10 @@
 package remme
 
 import (
-	"github.com/while-loop/remember-me/webservices"
-	"github.com/while-loop/remember-me/managers"
 	"github.com/while-loop/remember-me/db"
+	"github.com/while-loop/remember-me/managers"
 	"github.com/while-loop/remember-me/util"
+	"github.com/while-loop/remember-me/webservices"
 )
 
 const (

@@ -1,9 +1,9 @@
 package db
 
 import (
-	"time"
-	"sync"
 	"github.com/while-loop/remember-me/api/services/v1/record"
+	"sync"
+	"time"
 )
 
 type DataStore interface {

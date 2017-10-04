@@ -2,10 +2,10 @@ package lastpass
 
 import (
 	"github.com/mattn/lastpass-go"
+	"github.com/while-loop/remember-me/managers"
 	"log"
 	"net/url"
 	"strings"
-	"github.com/while-loop/remember-me/managers"
 )
 
 type LastPassManager struct {

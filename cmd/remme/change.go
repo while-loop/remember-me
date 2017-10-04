@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/while-loop/remember-me"
-	"github.com/while-loop/remember-me/api/services/v1/changer"
 	"fmt"
 	"github.com/urfave/cli"
+	"github.com/while-loop/remember-me"
+	"github.com/while-loop/remember-me/api/services/v1/changer"
 	"strings"
 )
 
