@@ -78,7 +78,7 @@ func (a *App) ChangePasswords(out chan<- changer.Status, mngr managers.Manager, 
 		}
 
 		wg.Add(1)
-		go chPasswd(out, wg, service, mngr, site, lr, taskId)
+		go chPasswd(out, &wg, service, mngr, site, lr, taskId)
 	}
 
 	wg.Wait()
@@ -96,7 +96,7 @@ func newStatus(jId, tId uint64, typ changer.Status_Type, email, hname, msg strin
 	return changer.Status{JobId: jId, TaskId: tId, Type: typ, Email: email, Hostname: hname, Msg: msg}
 }
 
-func chPasswd(out chan<- changer.Status, wg sync.WaitGroup, goservice webservices.Webservice,
+func chPasswd(out chan<- changer.Status, wg *sync.WaitGroup, goservice webservices.Webservice,
 	mngr managers.Manager, gosite managers.Site, lr *db.LogRecord, goTaskId uint64) {
 
 	lr.IncTries(1)
