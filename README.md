@@ -33,6 +33,8 @@ Dependencies
 ------------
 
 - [protoc](https://github.com/google/protobuf/releases) >= 3.4.0
+- [proto-gen-go](https://github.com/golang/protpbuf)
+```go get -u github.com/golang/protobuf/protoc-gen-go```
 
 Building From Source
 ------------
