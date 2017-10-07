@@ -10,7 +10,7 @@ import (
 	"log"
 )
 
-//go:generate protoc -I ../../proto/ --go_out=plugins=grpc:../../api/services/v1/record/ ../../proto/record.proto
+//go:generate protoc -I ../../../proto/ --go_out=plugins=grpc:../../api/services/v1/record/ ../../../proto/record.proto
 
 var _ api.RecordServer = &RecordService{}
 
