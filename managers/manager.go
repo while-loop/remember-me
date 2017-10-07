@@ -36,7 +36,7 @@ func GetManager(name, username, password string) (Manager, error) {
 	name = strings.ToLower(name)
 	val, exists := managers.m[name]
 	if !exists {
-		return nil, fmt.Errorf("manager does not exist: %s", name)
+		return nil, fmt.Errorf("Password manager %s is unavailable.", name)
 	}
 
 	return val(username, password)

@@ -44,13 +44,19 @@ func NewApp(datastore db.DataStore, services map[string]webservices.Webservice) 
 // Job finish status
 // Finish status
 func (a *App) ChangePasswords(out chan<- changer.Status, mngr managers.Manager, passwdFunc PasswdFunc) {
+	jId := rand.New(rand.NewSource(time.Now().UnixNano())).Uint64()
+	defer func() {
+		out <- newStatus(jId, 0, changer.Status_JOB_FINISH, mngr.GetEmail(), "", "")
+		close(out)
+	}()
+
 	sites := mngr.GetSites()
 
 	// mutex when updating log record
 	wg := sync.WaitGroup{}
 	lr, err := a.Datastore.AddLog(&db.LogRecord{
 		Time:       time.Now(),
-		JobID:      rand.New(rand.NewSource(time.Now().UnixNano())).Uint64(),
+		JobID:      jId,
 		User:       mngr.GetEmail(),
 		TotalSites: uint64(len(sites)),
 	})
@@ -87,9 +93,6 @@ func (a *App) ChangePasswords(out chan<- changer.Status, mngr managers.Manager, 
 	if err != nil {
 		log.Println("Unable to save log", err, lr)
 	}
-
-	out <- newStatus(lr.JobID, 0, changer.Status_JOB_FINISH, mngr.GetEmail(), "", "")
-	close(out)
 }
 
 func newStatus(jId, tId uint64, typ changer.Status_Type, email, hname, msg string) changer.Status {
