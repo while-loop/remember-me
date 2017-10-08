@@ -22,6 +22,10 @@ func WebServices() map[string]webservices.Webservice {
 	return webservices.Services()
 }
 
+func Hello() string {
+    return "World"
+}
+
 func DefaultDB() db.DataStore {
 	return &db.StubDB{}
 }
