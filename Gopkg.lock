@@ -45,7 +45,7 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/mattn/lastpass-go"
+  name = "github.com/while-loop/lastpass-go"
   packages = [".","ecb"]
   revision = "82bef8502f75dced582606e4c1099ba3492ee2d9"
 

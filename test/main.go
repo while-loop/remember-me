@@ -35,7 +35,9 @@ func main() {
 
 	manStr, email, password := "", "", ""
 	local(manStr, email, password)
+	grpcc(email, password)
 }
+
 func local(manStr, email, password string) {
 	man, err := remme.GetManager(manStr, email, password)
 	if err != nil {

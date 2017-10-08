@@ -39,7 +39,7 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/mattn/lastpass-go"
+  name = "github.com/while-loop/lastpass-go"
 
 [[constraint]]
   name = "github.com/prometheus/client_golang"
