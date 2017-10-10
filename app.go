@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 	"github.com/while-loop/remember-me/storage/stub"
+	"github.com/while-loop/remember-me/util"
 )
 
 type App struct {
@@ -44,7 +45,7 @@ func NewApp(datastore storage.DataStore, services map[string]webservice.Webservi
 // Job Error status
 // Job finish status
 // Finish status
-func (a *App) ChangePasswords(out chan<- changer.Status, mngr manager.Manager, passwdFunc PasswdFunc) {
+func (a *App) ChangePasswords(out chan<- changer.Status, mngr manager.Manager, passwdFunc util.PasswdFunc) {
 	jId := rand.New(rand.NewSource(time.Now().UnixNano())).Uint64()
 	defer func() {
 		out <- newStatus(jId, 0, changer.Status_JOB_FINISH, mngr.GetEmail(), "", "")

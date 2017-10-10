@@ -15,6 +15,7 @@ import (
 	"net"
 	"net/http"
 	"fmt"
+	"github.com/while-loop/remember-me/webservice"
 )
 
 func main() {
@@ -30,7 +31,7 @@ func main() {
 	)
 
 	db := dynamodb.New()
-	app := remme.NewApp(db, remme.WebServices())
+	app := remme.NewApp(db, webservice.Services())
 
 	service.StartServices(app, rpc)
 

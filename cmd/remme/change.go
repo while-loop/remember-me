@@ -6,6 +6,10 @@ import (
 	"github.com/while-loop/remember-me"
 	"github.com/while-loop/remember-me/api/services/v1/changer"
 	"strings"
+	"github.com/while-loop/remember-me/manager"
+	"github.com/while-loop/remember-me/storage/stub"
+	"github.com/while-loop/remember-me/webservice"
+	"github.com/while-loop/remember-me/util"
 )
 
 func init() {
@@ -30,15 +34,15 @@ var changeCmd = cli.Command{
 		}
 
 		manStr, email, password := strings.ToLower(c.String("m")), c.Args().Get(0), c.Args().Get(1)
-		man, err := remme.GetManager(manStr, email, password)
+		man, err := manager.GetManager(manStr, email, password)
 		if err != nil {
 			fmt.Fprint(c.App.ErrWriter, err)
 			return err
 		}
 
-		app := remme.NewApp(remme.DefaultDB(), remme.WebServices())
+		app := remme.NewApp(stub.New(), webservice.Services())
 		statusChan := make(chan changer.Status)
-		go app.ChangePasswords(statusChan, man, remme.DefaultPasswdFunc)
+		go app.ChangePasswords(statusChan, man, util.DefaultPasswdFunc)
 
 		for status := range statusChan {
 			fmt.Fprintln(c.App.Writer, status)

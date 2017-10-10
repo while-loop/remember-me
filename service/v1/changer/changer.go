@@ -31,7 +31,7 @@ func (c *ChangeService) Register(rpc *grpc.Server) {
 }
 
 func (c *ChangeService) ChangePassword(req *api.ChangeRequest, stream api.Changer_ChangePasswordServer) error {
-	man, err := remme.GetManager(req.Manager.String(), req.Email, req.Password)
+	man, err := manager.GetManager(req.Manager.String(), req.Email, req.Password)
 	if err != nil {
 		return err
 	}

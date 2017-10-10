@@ -15,6 +15,12 @@ var (
 	stdChars = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
 )
 
+type PasswdFunc func() string
+
+var (
+	DefaultPasswdFunc = NewPasswordGen(32, true, true).Generate
+)
+
 type PasswdGen struct {
 	length uint
 	chars  []byte
