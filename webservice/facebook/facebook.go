@@ -4,7 +4,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf/browser"
 	"github.com/while-loop/remember-me/util"
-	"github.com/while-loop/remember-me/webservices"
+	"github.com/while-loop/remember-me/webservice"
 	"gopkg.in/headzoo/surf.v1"
 	"net/url"
 	"strings"
@@ -18,7 +18,7 @@ const (
 )
 
 func init() {
-	webservices.Register(facebookhost, NewFacebookWebservice())
+	webservice.Register(facebookhost, NewFacebookWebservice())
 }
 
 type FacebookWebservice struct {
@@ -33,31 +33,31 @@ func (f *FacebookWebservice) login(browsr *browser.Browser, email, password stri
 
 	err := browsr.Open(fUrl.String())
 	if err != nil {
-		return webservices.ConnectError{Hostname: fUrl.String()}
+		return webservice.ConnectError{Hostname: fUrl.String()}
 	}
 
 	// Log in to the site.
 	fm, err := browsr.Form("form[id=login_form]")
 	if err != nil {
-		return webservices.ParseError{Hostname: fUrl.String() + ": login_form"}
+		return webservice.ParseError{Hostname: fUrl.String() + ": login_form"}
 	}
 
 	err = fm.Input("email", email)
 	if err != nil {
-		return webservices.ParseError{Hostname: fUrl.String() + ": login_form_email"}
+		return webservice.ParseError{Hostname: fUrl.String() + ": login_form_email"}
 	}
 
 	err = fm.Input("pass", password)
 	if err != nil {
-		return webservices.ParseError{Hostname: fUrl.String() + ": login_form_password"}
+		return webservice.ParseError{Hostname: fUrl.String() + ": login_form_password"}
 	}
 
 	if fm.Submit() != nil {
-		return webservices.ParseError{Hostname: fUrl.String() + ": login_form_button"}
+		return webservice.ParseError{Hostname: fUrl.String() + ": login_form_button"}
 	}
 
 	if strings.Contains(browsr.Title(), "Log into Facebook") {
-		return webservices.AccountError{Email: email, Hostname: facebookhost}
+		return webservice.AccountError{Email: email, Hostname: facebookhost}
 	}
 
 	return nil
@@ -68,10 +68,10 @@ func (f *FacebookWebservice) logout(browsr *browser.Browser) error {
 
 	err := browsr.Open(fUrl.String())
 	if err != nil {
-		return webservices.ConnectError{Hostname: fUrl.String()}
+		return webservice.ConnectError{Hostname: fUrl.String()}
 	}
 
-	retErr := &webservices.AccountError{Hostname: facebookhost}
+	retErr := &webservice.AccountError{Hostname: facebookhost}
 	browsr.Find("a").EachWithBreak(func(_ int, s *goquery.Selection) bool {
 		if href, exist := s.Attr("href"); exist {
 			if strings.Contains(href, "logout") {
@@ -93,43 +93,43 @@ func (f *FacebookWebservice) changePassword(browsr *browser.Browser, email, oldp
 
 	err := browsr.Open(fUrl.String())
 	if err != nil {
-		return webservices.ConnectError{Hostname: fUrl.String()}
+		return webservice.ConnectError{Hostname: fUrl.String()}
 	}
 
 	fm, err := browsr.Form("form[method=post]")
 	if err != nil {
-		return webservices.ParseError{Hostname: fUrl.String() + ": chpwd_form"}
+		return webservice.ParseError{Hostname: fUrl.String() + ": chpwd_form"}
 	}
 
 	err = fm.Input("password_old", oldpasswd)
 	if err != nil {
-		return webservices.ParseError{Hostname: fUrl.String() + ": chpw_form_old"}
+		return webservice.ParseError{Hostname: fUrl.String() + ": chpw_form_old"}
 	}
 
 	err = fm.Input("password_new", newpasswd)
 	if err != nil {
-		return webservices.ParseError{Hostname: fUrl.String() + ": chpw_form_new"}
+		return webservice.ParseError{Hostname: fUrl.String() + ": chpw_form_new"}
 	}
 
 	err = fm.Input("password_confirm", newpasswd)
 	if err != nil {
-		return webservices.ParseError{Hostname: fUrl.String() + ": chpw_form_conf"}
+		return webservice.ParseError{Hostname: fUrl.String() + ": chpw_form_conf"}
 	}
 
 	if fm.Submit() != nil {
-		return webservices.ParseError{Hostname: fUrl.String() + ": login_form_button"}
+		return webservice.ParseError{Hostname: fUrl.String() + ": login_form_button"}
 	}
 
 	// TODO put in function
 	body := browsr.Body()
 	err = nil
 	if strings.Contains(body, "password was incorrect") {
-		err = webservices.AccountError{
+		err = webservice.AccountError{
 			Email:    email,
 			Hostname: facebookhost,
 		}
 	} else if strings.Contains(body, "Password must differ from old password") {
-		err = webservices.ChangeError{
+		err = webservice.ChangeError{
 			Hostname: facebookhost,
 			Email:    email,
 			Message:  "Password must differ from old password",

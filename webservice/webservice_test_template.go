@@ -1,4 +1,4 @@
-package webservices
+package webservice
 
 import (
 	_ "github.com/stretchr/testify/assert"

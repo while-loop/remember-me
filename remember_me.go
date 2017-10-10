@@ -1,10 +1,10 @@
 package remme
 
 import (
-	"github.com/while-loop/remember-me/db"
-	"github.com/while-loop/remember-me/managers"
+	"github.com/while-loop/remember-me/storage"
+	"github.com/while-loop/remember-me/manager"
 	"github.com/while-loop/remember-me/util"
-	"github.com/while-loop/remember-me/webservices"
+	"github.com/while-loop/remember-me/webservice"
 )
 
 const (
@@ -19,18 +19,18 @@ var (
 	DefaultPasswdFunc = util.NewPasswordGen(32, true, true).Generate
 )
 
-func WebServices() map[string]webservices.Webservice {
-	return webservices.Services()
+func WebServices() map[string]webservice.Webservice {
+	return webservice.Services()
 }
 
 func Hello() string {
     return "World"
 }
 
-func DefaultDB() db.DataStore {
-	return &db.StubDB{}
+func DefaultDB() storage.DataStore {
+	return &storage.StubDB{}
 }
 
-func GetManager(name, username, password string) (managers.Manager, error) {
-	return managers.GetManager(name, username, password)
+func GetManager(name, username, password string) (manager.Manager, error) {
+	return manager.GetManager(name, username, password)
 }

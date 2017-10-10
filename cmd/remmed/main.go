@@ -7,8 +7,8 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/while-loop/remember-me"
-	"github.com/while-loop/remember-me/db/dynamodb"
-	"github.com/while-loop/remember-me/services"
+	"github.com/while-loop/remember-me/storage/dynamodb"
+	"github.com/while-loop/remember-me/service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
@@ -32,7 +32,7 @@ func main() {
 	db := dynamodb.NewDynamoDB()
 	app := remme.NewApp(db, remme.WebServices())
 
-	services.StartServices(app, rpc)
+	service.StartServices(app, rpc)
 
 	// Register reflection service on gRPC server.
 	reflection.Register(rpc)

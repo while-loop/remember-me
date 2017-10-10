@@ -3,8 +3,8 @@ package changer
 import (
 	"github.com/while-loop/remember-me"
 	api "github.com/while-loop/remember-me/api/services/v1/changer"
-	"github.com/while-loop/remember-me/managers"
-	"github.com/while-loop/remember-me/services"
+	"github.com/while-loop/remember-me/manager"
+	"github.com/while-loop/remember-me/service"
 	"github.com/while-loop/remember-me/util"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -14,14 +14,14 @@ import (
 //go:generate protoc -I ../../../proto/ --go_out=plugins=grpc:../../../api/services/v1/changer/ ../../../proto/changer.proto
 
 func init() {
-	services.Register("changer", NewService)
+	service.Register("changer", NewService)
 }
 
 type ChangeService struct {
 	app *remme.App
 }
 
-func NewService(app *remme.App) services.Service {
+func NewService(app *remme.App) service.Service {
 	return &ChangeService{app: app}
 }
 
@@ -48,6 +48,6 @@ func (c *ChangeService) ChangePassword(req *api.ChangeRequest, stream api.Change
 
 func (c *ChangeService) GetManagers(ctx context.Context, req *api.ManagersRequest) (*api.ManagersReply, error) {
 	return &api.ManagersReply{
-		Managers: managers.GetManagers(),
+		Managers: manager.GetManagers(),
 	}, nil
 }

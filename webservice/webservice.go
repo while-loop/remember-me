@@ -1,4 +1,4 @@
-package webservices
+package webservice
 
 var (
 	defServices = map[string]Webservice{}

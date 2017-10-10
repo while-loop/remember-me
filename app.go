@@ -3,9 +3,9 @@ package remme
 import (
 	"fmt"
 	"github.com/while-loop/remember-me/api/services/v1/changer"
-	"github.com/while-loop/remember-me/db"
-	"github.com/while-loop/remember-me/managers"
-	"github.com/while-loop/remember-me/webservices"
+	"github.com/while-loop/remember-me/storage"
+	"github.com/while-loop/remember-me/manager"
+	"github.com/while-loop/remember-me/webservice"
 	"log"
 	"math/rand"
 	"strings"
@@ -14,8 +14,8 @@ import (
 )
 
 type App struct {
-	services  map[string]webservices.Webservice
-	Datastore db.DataStore
+	services  map[string]webservice.Webservice
+	Datastore storage.DataStore
 }
 
 var (
@@ -24,9 +24,9 @@ var (
 	proxyParseError = fmt.Errorf("unable to change password")
 )
 
-func NewApp(datastore db.DataStore, services map[string]webservices.Webservice) *App {
+func NewApp(datastore storage.DataStore, services map[string]webservice.Webservice) *App {
 	if datastore == nil {
-		datastore = &db.StubDB{}
+		datastore = &storage.StubDB{}
 	}
 
 	return &App{
@@ -43,7 +43,7 @@ func NewApp(datastore db.DataStore, services map[string]webservices.Webservice) 
 // Job Error status
 // Job finish status
 // Finish status
-func (a *App) ChangePasswords(out chan<- changer.Status, mngr managers.Manager, passwdFunc PasswdFunc) {
+func (a *App) ChangePasswords(out chan<- changer.Status, mngr manager.Manager, passwdFunc PasswdFunc) {
 	jId := rand.New(rand.NewSource(time.Now().UnixNano())).Uint64()
 	defer func() {
 		out <- newStatus(jId, 0, changer.Status_JOB_FINISH, mngr.GetEmail(), "", "")
@@ -54,7 +54,7 @@ func (a *App) ChangePasswords(out chan<- changer.Status, mngr managers.Manager, 
 
 	// mutex when updating log record
 	wg := sync.WaitGroup{}
-	lr, err := a.Datastore.AddLog(&db.LogRecord{
+	lr, err := a.Datastore.AddLog(&storage.LogRecord{
 		Time:       time.Now(),
 		JobID:      jId,
 		User:       mngr.GetEmail(),
@@ -99,8 +99,8 @@ func newStatus(jId, tId uint64, typ changer.Status_Type, email, hname, msg strin
 	return changer.Status{JobId: jId, TaskId: tId, Type: typ, Email: email, Hostname: hname, Msg: msg}
 }
 
-func chPasswd(out chan<- changer.Status, wg *sync.WaitGroup, goservice webservices.Webservice,
-	mngr managers.Manager, gosite managers.Site, lr *db.LogRecord, goTaskId uint64) {
+func chPasswd(out chan<- changer.Status, wg *sync.WaitGroup, goservice webservice.Webservice,
+	mngr manager.Manager, gosite manager.Site, lr *storage.LogRecord, goTaskId uint64) {
 
 	lr.IncTries(1)
 	log.Println("Changing password for:", gosite.Hostname, gosite.Email)
@@ -111,7 +111,7 @@ func chPasswd(out chan<- changer.Status, wg *sync.WaitGroup, goservice webservic
 	if err != nil {
 		log.Println(err)
 		lr.AddFailure(gosite.Hostname, gosite.Email, err.Error(), Version)
-		if _, ok := err.(webservices.ParseError); ok {
+		if _, ok := err.(webservice.ParseError); ok {
 			err = proxyParseError // user-friendly error
 		}
 
@@ -128,7 +128,7 @@ func chPasswd(out chan<- changer.Status, wg *sync.WaitGroup, goservice webservic
 			// oh shit boi. failed to revert password
 			log.Printf("Failed to revert back to old password for %s %s.. %s\n", gosite.Hostname, gosite.Email, err)
 			lr.AddFailure(gosite.Hostname, gosite.Email, "Failed to revert back to old password", Version)
-			if _, ok := err.(webservices.ParseError); ok {
+			if _, ok := err.(webservice.ParseError); ok {
 				err = proxyParseError // user-friendly error
 			}
 
@@ -142,7 +142,7 @@ func chPasswd(out chan<- changer.Status, wg *sync.WaitGroup, goservice webservic
 	out <- newStatus(lr.JobID, goTaskId, changer.Status_TASK_FINISH, gosite.Email, gosite.Hostname, "")
 }
 
-func (a *App) searchService(hostname string) (webservices.Webservice, error) {
+func (a *App) searchService(hostname string) (webservice.Webservice, error) {
 	hostname = strings.ToLower(hostname)
 	hostname = strings.TrimSpace(hostname)
 	if hostname == "" {

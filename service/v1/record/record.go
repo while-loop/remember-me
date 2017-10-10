@@ -3,8 +3,8 @@ package record
 import (
 	"github.com/while-loop/remember-me"
 	api "github.com/while-loop/remember-me/api/services/v1/record"
-	"github.com/while-loop/remember-me/db"
-	"github.com/while-loop/remember-me/services"
+	"github.com/while-loop/remember-me/storage"
+	"github.com/while-loop/remember-me/service"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"log"
@@ -15,14 +15,14 @@ import (
 var _ api.RecordServer = &RecordService{}
 
 type RecordService struct {
-	db db.DataStore
+	db storage.DataStore
 }
 
 func init() {
-	services.Register("record", NewService)
+	service.Register("record", NewService)
 }
 
-func NewService(app *remme.App) services.Service {
+func NewService(app *remme.App) service.Service {
 	return &RecordService{db: app.Datastore}
 }
 

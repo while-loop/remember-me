@@ -2,7 +2,7 @@ package lastpass
 
 import (
 	"github.com/while-loop/lastpass-go"
-	"github.com/while-loop/remember-me/managers"
+	"github.com/while-loop/remember-me/manager"
 	"log"
 	"net/url"
 	"strings"
@@ -18,7 +18,7 @@ const (
 )
 
 func init() {
-	managers.Register(name, func(email, password string) (managers.Manager, error) {
+	manager.Register(name, func(email, password string) (manager.Manager, error) {
 		return NewLastPassManager(email, password)
 	})
 }
@@ -49,15 +49,15 @@ func (lp *LastPassManager) GetPassword(hostname, email string) (string, error) {
 			return acc.Password, nil
 		}
 	}
-	return "", managers.AccountDNE(hostname, email)
+	return "", manager.AccountDNE(hostname, email)
 }
 
 func (lp *LastPassManager) SavePassword(hostname, email, password string) error {
 	return nil
 }
 
-func (lp *LastPassManager) GetSites() []managers.Site {
-	sites := []managers.Site{}
+func (lp *LastPassManager) GetSites() []manager.Site {
+	sites := []manager.Site{}
 
 	accs, err := lp.lp.GetAccounts()
 	if err != nil {
@@ -70,7 +70,7 @@ func (lp *LastPassManager) GetSites() []managers.Site {
 			log.Println("Failed to parse URL: ", acc.Url, err)
 		}
 
-		sites = append(sites, managers.Site{
+		sites = append(sites, manager.Site{
 			Hostname: strings.ToLower(u.Hostname()),
 			Email:    acc.Username,
 			Password: acc.Password,

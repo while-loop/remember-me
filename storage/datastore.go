@@ -1,4 +1,4 @@
-package db
+package storage
 
 import (
 	"github.com/while-loop/remember-me/api/services/v1/record"
