@@ -14,9 +14,11 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"fmt"
 )
 
 func main() {
+	fmt.Printf("Remme %s v%s-%d\n", remme.Release, remme.Version, remme.Revision)
 	lis, err := net.Listen("tcp", ":8081")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
