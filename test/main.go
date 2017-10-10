@@ -28,6 +28,10 @@ import (
 // dbs
 import (
 	_ "github.com/while-loop/remember-me/storage/dynamodb"
+	"github.com/while-loop/remember-me/manager"
+	"github.com/while-loop/remember-me/storage/stub"
+	"github.com/while-loop/remember-me/webservice"
+	"github.com/while-loop/remember-me/util"
 )
 
 func main() {
@@ -39,14 +43,14 @@ func main() {
 }
 
 func local(manStr, email, password string) {
-	man, err := remme.GetManager(manStr, email, password)
+	man, err := manager.GetManager(manStr, email, password)
 	if err != nil {
 		log.Fatalf("%s", err)
 	}
 
-	app := remme.NewApp(remme.DefaultDB(), remme.WebServices())
+	app := remme.NewApp(stub.New(), webservice.Services())
 	statusChan := make(chan changer_pb.Status)
-	go app.ChangePasswords(statusChan, man, remme.DefaultPasswdFunc)
+	go app.ChangePasswords(statusChan, man, util.DefaultPasswdFunc)
 	for status := range statusChan {
 		log.Print(status)
 	}
