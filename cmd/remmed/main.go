@@ -29,7 +29,7 @@ func main() {
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
 	)
 
-	db := dynamodb.NewDynamoDB()
+	db := dynamodb.New()
 	app := remme.NewApp(db, remme.WebServices())
 
 	service.StartServices(app, rpc)

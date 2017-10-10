@@ -14,14 +14,14 @@ import (
 //go:generate protoc -I ../../../proto/ --go_out=plugins=grpc:../../../api/services/v1/changer/ ../../../proto/changer.proto
 
 func init() {
-	service.Register("changer", NewService)
+	service.Register("changer", New)
 }
 
 type ChangeService struct {
 	app *remme.App
 }
 
-func NewService(app *remme.App) service.Service {
+func New(app *remme.App) service.Service {
 	return &ChangeService{app: app}
 }
 

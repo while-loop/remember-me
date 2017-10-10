@@ -10,7 +10,7 @@ const (
 
 func init() {
 	manager.Register(name, func(email, password string) (manager.Manager, error) {
-		return NewMemManager(), nil
+		return New(), nil
 	})
 }
 
@@ -19,7 +19,7 @@ type MemManager struct {
 	passwds map[string]map[string]string
 }
 
-func NewMemManager() *MemManager {
+func New() manager.Manager {
 	return &MemManager{
 		passwds: map[string]map[string]string{},
 	}

@@ -19,10 +19,10 @@ type RecordService struct {
 }
 
 func init() {
-	service.Register("record", NewService)
+	service.Register("record", New)
 }
 
-func NewService(app *remme.App) service.Service {
+func New(app *remme.App) service.Service {
 	return &RecordService{db: app.Datastore}
 }
 

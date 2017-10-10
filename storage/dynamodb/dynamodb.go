@@ -7,7 +7,7 @@ import (
 type DynamoDB struct {
 }
 
-func NewDynamoDB() *DynamoDB {
+func New() storage.DataStore {
 	return &DynamoDB{}
 }
 

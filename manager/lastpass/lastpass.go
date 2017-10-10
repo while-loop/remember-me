@@ -19,11 +19,11 @@ const (
 
 func init() {
 	manager.Register(name, func(email, password string) (manager.Manager, error) {
-		return NewLastPassManager(email, password)
+		return New(email, password)
 	})
 }
 
-func NewLastPassManager(username, password string) (*LastPassManager, error) {
+func New(username, password string) (manager.Manager, error) {
 	lp, err := lastpass.New(username, password)
 	return &LastPassManager{
 		lp:    lp,

@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"github.com/while-loop/remember-me/storage/stub"
 )
 
 type App struct {
@@ -26,7 +27,7 @@ var (
 
 func NewApp(datastore storage.DataStore, services map[string]webservice.Webservice) *App {
 	if datastore == nil {
-		datastore = &storage.StubDB{}
+		datastore = &stub.StubDB{}
 	}
 
 	return &App{
