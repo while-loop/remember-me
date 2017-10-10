@@ -3,16 +3,16 @@ package remme
 import (
 	"fmt"
 	"github.com/while-loop/remember-me/api/services/v1/changer"
-	"github.com/while-loop/remember-me/storage"
 	"github.com/while-loop/remember-me/manager"
+	"github.com/while-loop/remember-me/storage"
+	"github.com/while-loop/remember-me/storage/stub"
+	"github.com/while-loop/remember-me/util"
 	"github.com/while-loop/remember-me/webservice"
 	"log"
 	"math/rand"
 	"strings"
 	"sync"
 	"time"
-	"github.com/while-loop/remember-me/storage/stub"
-	"github.com/while-loop/remember-me/util"
 )
 
 type App struct {
