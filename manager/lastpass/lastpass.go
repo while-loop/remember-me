@@ -9,7 +9,7 @@ import (
 )
 
 type LastPassManager struct {
-	lp    *lastpass.LastPass
+	lp    *lastpass.Vault
 	email string
 }
 

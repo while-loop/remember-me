@@ -5,7 +5,7 @@ import (
 	"github.com/headzoo/surf/browser"
 	"github.com/while-loop/remember-me/util"
 	"github.com/while-loop/remember-me/webservice"
-	"gopkg.in/headzoo/surf.v1"
+	"github.com/headzoo/surf"
 	"net/url"
 	"strings"
 )
