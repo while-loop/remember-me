@@ -1,7 +1,6 @@
 package manager
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -14,22 +13,8 @@ import (
 // get password
 // get all passwords
 
-func TestLoginWithCorrectPassword(t *testing.T) {
-	assert.True(t, true)
-}
-
-func TestLoginWithWrongPassword(t *testing.T) {
-	assert.True(t, true)
-}
-
-func TestLoginWithNonExistantEmail(t *testing.T) {
-	assert.True(t, true)
-}
-
-func TestSaveNewPassword(t *testing.T) {
-	assert.True(t, true)
-}
-
-func TestGetAllPasswords(t *testing.T) {
-	assert.True(t, true)
-}
+func TestLoginWithCorrectPassword(t *testing.T) {}
+func TestLoginWithWrongPassword(t *testing.T) {}
+func TestLoginWithNonExistantEmail(t *testing.T) {}
+func TestSaveNewPassword(t *testing.T) {}
+func TestGetAllPasswords(t *testing.T) {}
