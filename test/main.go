@@ -1,20 +1,5 @@
 package main
 
-import (
-	"context"
-	"fmt"
-	"github.com/while-loop/remember-me"
-	changer_pb "github.com/while-loop/remember-me/api/services/v1/changer"
-	"google.golang.org/grpc"
-	"log"
-)
-
-// grpc services
-import (
-	_ "github.com/while-loop/remember-me/service/v1/changer"
-	_ "github.com/while-loop/remember-me/service/v1/record"
-)
-
 // managers
 import (
 	_ "github.com/while-loop/remember-me/manager/lastpass"
@@ -25,13 +10,17 @@ import (
 	_ "github.com/while-loop/remember-me/webservice/facebook"
 )
 
-// dbs
 import (
-	_ "github.com/while-loop/remember-me/storage/dynamodb"
 	"github.com/while-loop/remember-me/manager"
 	"github.com/while-loop/remember-me/storage/stub"
 	"github.com/while-loop/remember-me/webservice"
 	"github.com/while-loop/remember-me/util"
+	"github.com/while-loop/remember-me"
+	"fmt"
+	"context"
+	changer_pb "github.com/while-loop/remember-me/api/services/v1/changer"
+	"google.golang.org/grpc"
+	"log"
 )
 
 func main() {

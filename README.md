@@ -34,25 +34,16 @@ Dependencies
 
 - [protoc](https://github.com/google/protobuf/releases) >= 3.4.0
 - [proto-gen-go](https://github.com/golang/protpbuf)
-```go get -u github.com/golang/protobuf/protoc-gen-go```
-
-Building From Source
-------------
-
-Compile protobuf objects
-```
-$ go get -u github.com/while-loop/remember-me/
-$ cd $GOPATH/src/github.com/while-loop/remember-me/
-$ dep ensure
-$ go generate ./...
-```
+```go get github.com/golang/protobuf/protoc-gen-go```
 
 Installation
 ------------
 
-Install binaries
-```bash
-$ go get -u github.com/while-loop/remember-me/cmd/...
+```
+$ go get github.com/while-loop/remember-me/
+$ cd $GOPATH/src/github.com/while-loop/remember-me/
+$ dep ensure
+$ cd cmd && go install ./...
 ```
 
 Usage
@@ -64,6 +55,28 @@ Usage
 #### cli
 ```bash
 $ remme -h
+```
+
+```
+NAME:
+   remember-me - Automatic password changer
+
+USAGE:
+   remme [global options] command [command options] [arguments...]
+
+VERSION:
+   0.0.1
+
+DESCRIPTION:
+   Automatic password changer
+
+COMMANDS:
+     change, ch  change passwords for a given manager
+     help, h     Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --help, -h     show help
+   --version, -v  print the version
 ```
 
 Changelog
