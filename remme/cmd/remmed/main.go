@@ -7,15 +7,15 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/while-loop/remember-me"
-	"github.com/while-loop/remember-me/storage/dynamodb"
-	"github.com/while-loop/remember-me/service"
+	"github.com/while-loop/remember-me/remme/storagetorage/dynamodb"
+	"github.com/while-loop/remember-me/remme/serviceervice"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"net/http"
 	"fmt"
-	"github.com/while-loop/remember-me/webservice"
+	"github.com/while-loop/remember-me/remme/webserviceervice"
 )
 
 func main() {

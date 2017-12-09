@@ -2,23 +2,23 @@ package main
 
 // managers
 import (
-	_ "github.com/while-loop/remember-me/manager/lastpass"
+	_ "github.com/while-loop/remember-me/remme/manager/lastpass"
 )
 
 // webservices
 import (
-	_ "github.com/while-loop/remember-me/webservice/facebook"
+	_ "github.com/while-loop/remember-me/remme/webservice/facebook"
 )
 
 import (
-	"github.com/while-loop/remember-me/manager"
-	"github.com/while-loop/remember-me/storage/stub"
-	"github.com/while-loop/remember-me/webservice"
-	"github.com/while-loop/remember-me/util"
+	"github.com/while-loop/remember-me/remme/manager"
+	"github.com/while-loop/remember-me/remme/storage/stub"
+	"github.com/while-loop/remember-me/remme/webservice"
+	"github.com/while-loop/remember-me/remme/util"
 	"github.com/while-loop/remember-me"
 	"fmt"
 	"context"
-	changer_pb "github.com/while-loop/remember-me/api/services/v1/changer"
+	changer_pb "github.com/while-loop/remember-me/remme/api/services/v1/changer"
 	"google.golang.org/grpc"
 	"log"
 )

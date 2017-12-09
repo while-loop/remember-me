@@ -2,12 +2,12 @@ package remme
 
 import (
 	"fmt"
-	"github.com/while-loop/remember-me/api/services/v1/changer"
-	"github.com/while-loop/remember-me/manager"
-	"github.com/while-loop/remember-me/storage"
-	"github.com/while-loop/remember-me/storage/stub"
-	"github.com/while-loop/remember-me/util"
-	"github.com/while-loop/remember-me/webservice"
+	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
+	"github.com/while-loop/remember-me/remme/manager"
+	"github.com/while-loop/remember-me/remme/storage"
+	"github.com/while-loop/remember-me/remme/storage/stub"
+	"github.com/while-loop/remember-me/remme/util"
+	"github.com/while-loop/remember-me/remme/webservice"
 	"log"
 	"math/rand"
 	"strings"

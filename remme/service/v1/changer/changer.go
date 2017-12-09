@@ -2,10 +2,10 @@ package changer
 
 import (
 	"github.com/while-loop/remember-me"
-	api "github.com/while-loop/remember-me/api/services/v1/changer"
-	"github.com/while-loop/remember-me/manager"
-	"github.com/while-loop/remember-me/service"
-	"github.com/while-loop/remember-me/util"
+	api "github.com/while-loop/remember-me/remme/api/services/v1/changer"
+	"github.com/while-loop/remember-me/remme/manager"
+	"github.com/while-loop/remember-me/remme/serviceervice"
+	"github.com/while-loop/remember-me/remme/utile/util"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"log"

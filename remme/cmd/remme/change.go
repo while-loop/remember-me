@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"github.com/urfave/cli"
 	"github.com/while-loop/remember-me"
-	"github.com/while-loop/remember-me/api/services/v1/changer"
+	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
 	"strings"
-	"github.com/while-loop/remember-me/manager"
-	"github.com/while-loop/remember-me/storage/stub"
-	"github.com/while-loop/remember-me/webservice"
-	"github.com/while-loop/remember-me/util"
+	"github.com/while-loop/remember-me/remme/manageranager"
+	"github.com/while-loop/remember-me/remme/storagetorage/stub"
+	"github.com/while-loop/remember-me/remme/webserviceervice"
+	"github.com/while-loop/remember-me/remme/utile/util"
 )
 
 func init() {

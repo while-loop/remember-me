@@ -1,8 +1,8 @@
 package record
 
 import (
-	api "github.com/while-loop/remember-me/api/services/v1/record"
-	"github.com/while-loop/remember-me/storage"
+	api "github.com/while-loop/remember-me/remme/api/services/v1/record"
+	"github.com/while-loop/remember-me/remme/storagetorage"
 )
 
 func lr2Proto(lr *storage.LogRecord) *api.LogRecord {

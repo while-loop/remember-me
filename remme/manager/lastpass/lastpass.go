@@ -2,7 +2,7 @@ package lastpass
 
 import (
 	"github.com/while-loop/lastpass-go"
-	"github.com/while-loop/remember-me/manager"
+	"github.com/while-loop/remember-me/remme/manageranager"
 	"log"
 	"net/url"
 	"strings"

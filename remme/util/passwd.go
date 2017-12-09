@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"crypto/rand"
 	"fmt"
-	"github.com/while-loop/remember-me/api/services/v1/changer"
+	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
 	"math/big"
 	"os"
 )

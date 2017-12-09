@@ -1,7 +1,7 @@
 package stub
 
 import (
-	"github.com/while-loop/remember-me/storage"
+	"github.com/while-loop/remember-me/remme/storagetorage"
 )
 
 type StubDB struct {

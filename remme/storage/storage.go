@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"github.com/while-loop/remember-me/api/services/v1/record"
+	"github.com/while-loop/remember-me/remme/api/services/v1/record"
 	"sync"
 	"time"
 )
