@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/urfave/cli"
 	"os"
 	"sync"
+
+	"github.com/urfave/cli"
 	"github.com/while-loop/remember-me/remme"
 )
 
@@ -21,6 +22,8 @@ func main() {
 	app.a.Usage = app.a.Description
 	app.a.Version = remme.Version
 	app.a.HelpName = "remme"
+	app.a.ErrWriter = os.Stderr
+	app.a.Writer = os.Stdout
 	app.Unlock()
 
 	app.a.Run(os.Args)

@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/urfave/cli"
-	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
 	"strings"
+
+	"github.com/urfave/cli"
+	"github.com/while-loop/remember-me/remme"
+	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
 	"github.com/while-loop/remember-me/remme/manager"
 	"github.com/while-loop/remember-me/remme/storage/stub"
-	"github.com/while-loop/remember-me/remme/webservice"
 	"github.com/while-loop/remember-me/remme/util"
-	"github.com/while-loop/remember-me/remme"
+	"github.com/while-loop/remember-me/remme/webservice"
 )
 
 func init() {
@@ -36,7 +37,7 @@ var changeCmd = cli.Command{
 		manStr, email, password := strings.ToLower(c.String("m")), c.Args().Get(0), c.Args().Get(1)
 		man, err := manager.GetManager(manStr, email, password)
 		if err != nil {
-			fmt.Fprint(c.App.ErrWriter, err)
+			fmt.Fprintln(c.App.ErrWriter, err)
 			return err
 		}
 
