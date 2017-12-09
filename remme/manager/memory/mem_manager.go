@@ -14,18 +14,18 @@ func init() {
 	})
 }
 
-type MemManager struct {
+type memManager struct {
 	// passwds[hostname][email] = password
 	passwds map[string]map[string]string
 }
 
 func New() manager.Manager {
-	return &MemManager{
+	return &memManager{
 		passwds: map[string]map[string]string{},
 	}
 }
 
-func (m *MemManager) GetPassword(hostname, email string) (string, error) {
+func (m *memManager) GetPassword(hostname, email string) (string, error) {
 	if _, ok := m.passwds[hostname]; !ok {
 		return "", manager.AccountDNE(hostname, email)
 	}
@@ -37,11 +37,11 @@ func (m *MemManager) GetPassword(hostname, email string) (string, error) {
 	}
 }
 
-func (m *MemManager) GetEmail() string {
+func (m *memManager) GetEmail() string {
 	return "mem"
 }
 
-func (m *MemManager) SavePassword(hostname, email, password string) error {
+func (m *memManager) SavePassword(hostname, email, password string) error {
 	if _, ok := m.passwds[hostname]; !ok {
 		m.passwds[hostname] = map[string]string{}
 	}
@@ -50,7 +50,7 @@ func (m *MemManager) SavePassword(hostname, email, password string) error {
 	return nil
 }
 
-func (m *MemManager) GetSites() []manager.Site {
+func (m *memManager) GetSites() []manager.Site {
 	sites := []manager.Site{}
 	for host, emails := range m.passwds {
 		for email, passwd := range emails {

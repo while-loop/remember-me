@@ -1,14 +1,15 @@
 package lastpass
 
 import (
-	"github.com/while-loop/lastpass-go"
-	"github.com/while-loop/remember-me/remme/manager"
 	"log"
 	"net/url"
 	"strings"
+
+	"github.com/while-loop/lastpass-go"
+	"github.com/while-loop/remember-me/remme/manager"
 )
 
-type LastPassManager struct {
+type lastPassManager struct {
 	lp    *lastpass.Vault
 	email string
 }
@@ -25,17 +26,17 @@ func init() {
 
 func New(username, password string) (manager.Manager, error) {
 	lp, err := lastpass.New(username, password)
-	return &LastPassManager{
+	return &lastPassManager{
 		lp:    lp,
 		email: username,
 	}, err
 }
 
-func (lp LastPassManager) GetEmail() string {
+func (lp lastPassManager) GetEmail() string {
 	return lp.email
 }
 
-func (lp *LastPassManager) GetPassword(hostname, email string) (string, error) {
+func (lp *lastPassManager) GetPassword(hostname, email string) (string, error) {
 	hostname = strings.ToLower(hostname)
 	accs, err := lp.lp.GetAccounts()
 	if err != nil {
@@ -52,11 +53,11 @@ func (lp *LastPassManager) GetPassword(hostname, email string) (string, error) {
 	return "", manager.AccountDNE(hostname, email)
 }
 
-func (lp *LastPassManager) SavePassword(hostname, email, password string) error {
+func (lp *lastPassManager) SavePassword(hostname, email, password string) error {
 	return nil
 }
 
-func (lp *LastPassManager) GetSites() []manager.Site {
+func (lp *lastPassManager) GetSites() []manager.Site {
 	sites := []manager.Site{}
 
 	accs, err := lp.lp.GetAccounts()
