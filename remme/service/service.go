@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/while-loop/remember-me"
 	"google.golang.org/grpc"
 	"log"
 	"sync"
+	"github.com/while-loop/remember-me/remme"
 )
 
 type ConstrucFunc func(app *remme.App) Service

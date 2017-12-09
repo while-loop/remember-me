@@ -1,7 +1,7 @@
 package memory
 
 import (
-	"github.com/while-loop/remember-me/remme/manageranager"
+	"github.com/while-loop/remember-me/remme/manager"
 )
 
 const (

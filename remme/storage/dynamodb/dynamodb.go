@@ -1,7 +1,7 @@
 package dynamodb
 
 import (
-	"github.com/while-loop/remember-me/remme/storagetorage"
+	"github.com/while-loop/remember-me/remme/storage"
 )
 
 type DynamoDB struct {

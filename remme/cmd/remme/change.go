@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/urfave/cli"
-	"github.com/while-loop/remember-me"
 	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
 	"strings"
-	"github.com/while-loop/remember-me/remme/manageranager"
-	"github.com/while-loop/remember-me/remme/storagetorage/stub"
-	"github.com/while-loop/remember-me/remme/webserviceervice"
-	"github.com/while-loop/remember-me/remme/utile/util"
+	"github.com/while-loop/remember-me/remme/manager"
+	"github.com/while-loop/remember-me/remme/storage/stub"
+	"github.com/while-loop/remember-me/remme/webservice"
+	"github.com/while-loop/remember-me/remme/util"
+	"github.com/while-loop/remember-me/remme"
 )
 
 func init() {

@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/urfave/cli"
-	"github.com/while-loop/remember-me"
 	"os"
 	"sync"
+	"github.com/while-loop/remember-me/remme"
 )
 
 var app = struct {

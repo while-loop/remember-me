@@ -6,16 +6,16 @@ package main
 import (
 	"github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/while-loop/remember-me"
-	"github.com/while-loop/remember-me/remme/storagetorage/dynamodb"
-	"github.com/while-loop/remember-me/remme/serviceervice"
+	"github.com/while-loop/remember-me/remme/storage/dynamodb"
+	"github.com/while-loop/remember-me/remme/service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"net/http"
 	"fmt"
-	"github.com/while-loop/remember-me/remme/webserviceervice"
+	"github.com/while-loop/remember-me/remme/webservice"
+	"github.com/while-loop/remember-me/remme"
 )
 
 func main() {

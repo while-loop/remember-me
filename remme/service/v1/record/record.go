@@ -1,10 +1,10 @@
 package record
 
 import (
-	"github.com/while-loop/remember-me"
+	"github.com/while-loop/remember-me/remme"
 	api "github.com/while-loop/remember-me/remme/api/services/v1/record"
-	"github.com/while-loop/remember-me/remme/storagetorage"
-	"github.com/while-loop/remember-me/remme/serviceervice"
+	"github.com/while-loop/remember-me/remme/storage"
+	"github.com/while-loop/remember-me/remme/service"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"log"

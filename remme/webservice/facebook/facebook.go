@@ -4,10 +4,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf/browser"
 	"github.com/while-loop/remember-me/remme/util"
-	"github.com/while-loop/remember-me/remme/webserviceervice"
 	"github.com/headzoo/surf"
 	"net/url"
 	"strings"
+	"github.com/while-loop/remember-me/remme/webservice"
 )
 
 const (

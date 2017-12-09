@@ -15,7 +15,7 @@ import (
 	"github.com/while-loop/remember-me/remme/storage/stub"
 	"github.com/while-loop/remember-me/remme/webservice"
 	"github.com/while-loop/remember-me/remme/util"
-	"github.com/while-loop/remember-me"
+	"github.com/while-loop/remember-me/remme"
 	"fmt"
 	"context"
 	changer_pb "github.com/while-loop/remember-me/remme/api/services/v1/changer"

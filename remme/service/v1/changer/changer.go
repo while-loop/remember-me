@@ -1,14 +1,14 @@
 package changer
 
 import (
-	"github.com/while-loop/remember-me"
 	api "github.com/while-loop/remember-me/remme/api/services/v1/changer"
 	"github.com/while-loop/remember-me/remme/manager"
-	"github.com/while-loop/remember-me/remme/serviceervice"
-	"github.com/while-loop/remember-me/remme/utile/util"
+	"github.com/while-loop/remember-me/remme/service"
+	"github.com/while-loop/remember-me/remme/util"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"log"
+	"github.com/while-loop/remember-me/remme"
 )
 
 //go:generate protoc -I ../../../proto/ --go_out=plugins=grpc:../../../api/services/v1/changer/ ../../../proto/changer.proto
