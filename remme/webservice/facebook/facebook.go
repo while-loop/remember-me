@@ -1,12 +1,13 @@
 package facebook
 
 import (
-	"github.com/PuerkitoBio/goquery"
-	"github.com/headzoo/surf/browser"
-	"github.com/while-loop/remember-me/remme/util"
-	"github.com/headzoo/surf"
 	"net/url"
 	"strings"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/headzoo/surf"
+	"github.com/headzoo/surf/browser"
+	"github.com/while-loop/remember-me/remme/util"
 	"github.com/while-loop/remember-me/remme/webservice"
 )
 
@@ -18,17 +19,17 @@ const (
 )
 
 func init() {
-	webservice.Register(facebookhost, NewFacebookWebservice())
+	webservice.Register(facebookhost, NewfacebookWebservice())
 }
 
-type FacebookWebservice struct {
+type facebookWebservice struct {
 }
 
-func NewFacebookWebservice() *FacebookWebservice {
-	return &FacebookWebservice{}
+func NewfacebookWebservice() webservice.Webservice {
+	return &facebookWebservice{}
 }
 
-func (f *FacebookWebservice) login(browsr *browser.Browser, email, password string) error {
+func (f *facebookWebservice) login(browsr *browser.Browser, email, password string) error {
 	fUrl := buildFBUrl(facebooklogin)
 
 	err := browsr.Open(fUrl.String())
@@ -63,7 +64,7 @@ func (f *FacebookWebservice) login(browsr *browser.Browser, email, password stri
 	return nil
 }
 
-func (f *FacebookWebservice) logout(browsr *browser.Browser) error {
+func (f *facebookWebservice) logout(browsr *browser.Browser) error {
 	fUrl := buildFBUrl(facebooklogin)
 
 	err := browsr.Open(fUrl.String())
@@ -88,7 +89,7 @@ func (f *FacebookWebservice) logout(browsr *browser.Browser) error {
 	return retErr
 }
 
-func (f *FacebookWebservice) changePassword(browsr *browser.Browser, email, oldpasswd, newpasswd string) error {
+func (f *facebookWebservice) changePassword(browsr *browser.Browser, email, oldpasswd, newpasswd string) error {
 	fUrl := buildFBUrl(facebookchpasswd)
 
 	err := browsr.Open(fUrl.String())
@@ -138,7 +139,7 @@ func (f *FacebookWebservice) changePassword(browsr *browser.Browser, email, oldp
 	return err
 }
 
-func (f *FacebookWebservice) ChangePassword(email, oldpasswd, newpasswd string) error {
+func (f *facebookWebservice) ChangePassword(email, oldpasswd, newpasswd string) error {
 	browsr := surf.NewBrowser()
 	se := util.StickyError{}
 
