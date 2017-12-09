@@ -4,13 +4,12 @@ import (
 	"bytes"
 	"crypto/rand"
 	"fmt"
-	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
 	"math/big"
 	"os"
 )
 
 var (
-	stdNums  = []byte("0123456789!@#$%^&*()-_=+,.?/:;{}[]`~")
+	stdNums  = []byte(`0123456789`)
 	stdSpecs = []byte("!@#$%^&*()-_=+,.?/:;{}[]`~")
 	stdChars = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
 )
@@ -37,13 +36,6 @@ func NewPasswordGen(len uint, specialChars, numbers bool) *PasswdGen {
 	}
 
 	return &PasswdGen{len, data.Bytes()}
-}
-
-func NewPasswordGenP(config *changer.PasswdConfig) *PasswdGen {
-	if config == nil {
-		return NewPasswordGen(32, true, true)
-	}
-	return NewPasswordGen(uint(config.Length), config.SpecialChars, config.Numbers)
 }
 
 func (p PasswdGen) Generate() string {

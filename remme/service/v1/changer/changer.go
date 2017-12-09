@@ -36,7 +36,7 @@ func (c *ChangeService) ChangePassword(req *api.ChangeRequest, stream api.Change
 		return err
 	}
 
-	pwdgen := util.NewPasswordGenP(req.PasswdConfig)
+	pwdgen := util.NewPasswordGen(uint(req.PasswdConfig.Length), req.PasswdConfig.SpecialChars, req.PasswdConfig.Numbers)
 	statusChan := make(chan api.Status)
 	go c.app.ChangePasswords(statusChan, man, pwdgen.Generate)
 
