@@ -40,10 +40,7 @@ Installation
 ------------
 
 ```
-$ go get github.com/while-loop/remember-me/
-$ cd $GOPATH/src/github.com/while-loop/remember-me/
-$ dep ensure
-$ cd cmd && go install ./...
+$ go get github.com/while-loop/remember-me/remme/...
 ```
 
 Usage
