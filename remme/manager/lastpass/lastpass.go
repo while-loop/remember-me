@@ -10,7 +10,7 @@ import (
 )
 
 type lastPassManager struct {
-	lp    *lastpass.Vault
+	*lastpass.Vault
 	email string
 }
 
@@ -27,7 +27,7 @@ func init() {
 func New(username, password string) (manager.Manager, error) {
 	lp, err := lastpass.New(username, password)
 	return &lastPassManager{
-		lp:    lp,
+		Vault: lp,
 		email: username,
 	}, err
 }
@@ -47,7 +47,7 @@ func (lp *lastPassManager) GetPassword(hostname, email string) (string, error) {
 }
 
 func (lp *lastPassManager) getAccount(hostname, email string) (*lastpass.Account, error) {
-	accs, err := lp.lp.GetAccounts()
+	accs, err := lp.GetAccounts()
 	if err != nil {
 		return nil, err
 	}
@@ -70,14 +70,14 @@ func (lp *lastPassManager) SavePassword(hostname, email, password string) error 
 	}
 
 	acc.Password = password
-	_, err = lp.lp.UpdateAccount(acc)
+	_, err = lp.UpdateAccount(acc)
 	return err
 }
 
 func (lp *lastPassManager) GetSites() []manager.Site {
 	sites := []manager.Site{}
 
-	accs, err := lp.lp.GetAccounts()
+	accs, err := lp.GetAccounts()
 	if err != nil {
 		return sites
 	}
