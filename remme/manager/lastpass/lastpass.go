@@ -38,23 +38,40 @@ func (lp lastPassManager) GetEmail() string {
 
 func (lp *lastPassManager) GetPassword(hostname, email string) (string, error) {
 	hostname = strings.ToLower(hostname)
-	accs, err := lp.lp.GetAccounts()
+	acc, err := lp.getAccount(hostname, email)
 	if err != nil {
 		return "", err
+	}
+
+	return acc.Password, nil
+}
+
+func (lp *lastPassManager) getAccount(hostname, email string) (*lastpass.Account, error) {
+	accs, err := lp.lp.GetAccounts()
+	if err != nil {
+		return nil, err
 	}
 
 	for _, acc := range accs {
 		// TODO regex?
 		u := strings.ToLower(acc.Url)
 		if strings.Contains(u, hostname) && strings.EqualFold(email, acc.Username) {
-			return acc.Password, nil
+			return acc, nil
 		}
 	}
-	return "", manager.AccountDNE(hostname, email)
+
+	return nil, manager.AccountDNE(hostname, email)
 }
 
 func (lp *lastPassManager) SavePassword(hostname, email, password string) error {
-	return nil
+	acc, err := lp.getAccount(hostname, email)
+	if err != nil {
+		return err
+	}
+
+	acc.Password = password
+	_, err = lp.lp.UpdateAccount(acc)
+	return err
 }
 
 func (lp *lastPassManager) GetSites() []manager.Site {

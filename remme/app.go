@@ -2,17 +2,18 @@ package remme
 
 import (
 	"fmt"
+	"log"
+	"math/rand"
+	"strings"
+	"sync"
+	"time"
+
 	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
 	"github.com/while-loop/remember-me/remme/manager"
 	"github.com/while-loop/remember-me/remme/storage"
 	"github.com/while-loop/remember-me/remme/storage/stub"
 	"github.com/while-loop/remember-me/remme/util"
 	"github.com/while-loop/remember-me/remme/webservice"
-	"log"
-	"math/rand"
-	"strings"
-	"sync"
-	"time"
 )
 
 type App struct {
@@ -113,10 +114,7 @@ func chPasswd(out chan<- changer.Status, wg *sync.WaitGroup, goservice webservic
 	if err != nil {
 		log.Println(err)
 		lr.AddFailure(gosite.Hostname, gosite.Email, err.Error(), Version)
-		if _, ok := err.(webservice.ParseError); ok {
-			err = proxyParseError // user-friendly error
-		}
-
+		err = proxyParseError // user-friendly error
 		out <- newStatus(lr.JobID, goTaskId, changer.Status_TASK_ERROR, gosite.Email, gosite.Hostname, err.Error())
 		return
 	}
