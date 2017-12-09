@@ -47,7 +47,7 @@ Usage
 -----
 
 #### gRPC & Package
-[Example](test/main.go)
+[Example](example/main.go)
 
 #### cli
 ```bash
