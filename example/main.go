@@ -11,24 +11,28 @@ import (
 )
 
 import (
+	"context"
+	"fmt"
+
+	"time"
+
+	"github.com/sirupsen/logrus"
+	"github.com/while-loop/remember-me/remme"
+	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
+	"github.com/while-loop/remember-me/remme/log"
 	"github.com/while-loop/remember-me/remme/manager"
 	"github.com/while-loop/remember-me/remme/storage/stub"
-	"github.com/while-loop/remember-me/remme/webservice"
 	"github.com/while-loop/remember-me/remme/util"
-	"github.com/while-loop/remember-me/remme"
-	"fmt"
-	"context"
-	changer_pb "github.com/while-loop/remember-me/remme/api/services/v1/changer"
+	"github.com/while-loop/remember-me/remme/webservice"
 	"google.golang.org/grpc"
-	"log"
 )
 
 func main() {
+	log.Logger.SetLevel(logrus.DebugLevel)
 	// Set up a connection to the server.
-
-	manStr, email, password := "", "", ""
+	manStr, email, password := "lastpass", "", ""
 	local(manStr, email, password)
-	grpcc(email, password)
+	//grpcMode(email, password)
 }
 
 func local(manStr, email, password string) {
@@ -38,42 +42,34 @@ func local(manStr, email, password string) {
 	}
 
 	app := remme.NewApp(stub.New(), webservice.Services())
-	statusChan := make(chan changer_pb.Status)
-	go app.ChangePasswords(statusChan, man, util.DefaultPasswdFunc)
-	for status := range statusChan {
-		log.Print(status)
-	}
+	log.Info(man.GetSites())
+	jobId := app.ChangePasswords(man, util.DefaultPasswdFunc)
+	fmt.Println(jobId)
+	time.Sleep(5 * time.Second)
 }
 
-func grpcc(email, password string) {
+func grpcMode(email, password string) {
 	fmt.Println("setting client")
 	conn, err := grpc.Dial("localhost:8081", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := changer_pb.NewChangerClient(conn)
+	c := changer.NewChangerClient(conn)
 
-	req := &changer_pb.ChangeRequest{
+	req := &changer.ChangeRequest{
 		Password: password,
 		Email:    email,
-		Manager:  changer_pb.ChangeRequest_LASTPASS,
-		PasswdConfig: &changer_pb.PasswdConfig{
-			Length: 5,
+		Manager:  changer.ChangeRequest_LASTPASS,
+		PasswdConfig: &changer.PasswdConfig{
+			Length: 8,
 		},
 	}
 
-	stream, err := c.ChangePassword(context.Background(), req)
+	reply, err := c.ChangePassword(context.Background(), req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
+	log.Debug(reply)
 
-	for {
-		status, err := stream.Recv()
-		if err != nil {
-			fmt.Println("err", err)
-			break
-		}
-		fmt.Printf("%v\n", status)
-	}
 }

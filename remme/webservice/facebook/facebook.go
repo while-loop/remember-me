@@ -19,13 +19,13 @@ const (
 )
 
 func init() {
-	webservice.Register(facebookhost, NewfacebookWebservice())
+	webservice.Register(facebookhost, New())
 }
 
 type facebookWebservice struct {
 }
 
-func NewfacebookWebservice() webservice.Webservice {
+func New() webservice.Webservice {
 	return &facebookWebservice{}
 }
 
