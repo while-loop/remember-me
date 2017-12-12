@@ -19,7 +19,8 @@ type Manager interface {
 	GetEmail() string
 	GetPassword(hostname, email string) (string, error)
 	SavePassword(hostname, email, password string) error
-	GetSites() []Site
+	GetSites() ([]Site, error)
+	Name() string
 }
 
 func Register(name string, regFunc RegisterFunc) {
@@ -36,7 +37,7 @@ func GetManager(name, username, password string) (Manager, error) {
 	name = strings.ToLower(name)
 	val, exists := managers.m[name]
 	if !exists {
-		return nil, fmt.Errorf("Password manager %s is unavailable.", name)
+		return nil, fmt.Errorf("password manager %s is unavailable", name)
 	}
 
 	return val(username, password)

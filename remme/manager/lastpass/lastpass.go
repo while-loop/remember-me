@@ -1,11 +1,11 @@
 package lastpass
 
 import (
-	"log"
 	"net/url"
 	"strings"
 
 	"github.com/while-loop/lastpass-go"
+	"github.com/while-loop/remember-me/remme/log"
 	"github.com/while-loop/remember-me/remme/manager"
 )
 
@@ -30,6 +30,10 @@ func New(username, password string) (manager.Manager, error) {
 		Vault: lp,
 		email: username,
 	}, err
+}
+
+func (lp lastPassManager) Name() string {
+	return name
 }
 
 func (lp lastPassManager) GetEmail() string {
@@ -74,18 +78,19 @@ func (lp *lastPassManager) SavePassword(hostname, email, password string) error 
 	return err
 }
 
-func (lp *lastPassManager) GetSites() []manager.Site {
+func (lp *lastPassManager) GetSites() ([]manager.Site, error) {
 	sites := []manager.Site{}
 
 	accs, err := lp.GetAccounts()
 	if err != nil {
-		return sites
+		log.Error(err)
+		return nil, err
 	}
 
 	for _, acc := range accs {
 		u, err := url.Parse(acc.Url)
 		if err != nil {
-			log.Println("Failed to parse URL: ", acc.Url, err)
+			log.Error("Failed to parse URL: ", acc.Url, err)
 		}
 
 		sites = append(sites, manager.Site{
@@ -95,5 +100,5 @@ func (lp *lastPassManager) GetSites() []manager.Site {
 		})
 	}
 
-	return sites
+	return sites, nil
 }

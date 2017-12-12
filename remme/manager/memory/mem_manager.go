@@ -25,6 +25,10 @@ func New() manager.Manager {
 	}
 }
 
+func (m *memManager) Name() string {
+	return name
+}
+
 func (m *memManager) GetPassword(hostname, email string) (string, error) {
 	if _, ok := m.passwds[hostname]; !ok {
 		return "", manager.AccountDNE(hostname, email)
@@ -50,7 +54,7 @@ func (m *memManager) SavePassword(hostname, email, password string) error {
 	return nil
 }
 
-func (m *memManager) GetSites() []manager.Site {
+func (m *memManager) GetSites() ([]manager.Site, error) {
 	sites := []manager.Site{}
 	for host, emails := range m.passwds {
 		for email, passwd := range emails {
@@ -62,5 +66,5 @@ func (m *memManager) GetSites() []manager.Site {
 		}
 	}
 
-	return sites
+	return sites, nil
 }
