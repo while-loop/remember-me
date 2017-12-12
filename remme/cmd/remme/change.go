@@ -6,7 +6,7 @@ import (
 
 	"github.com/urfave/cli"
 	"github.com/while-loop/remember-me/remme"
-	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
+	"github.com/while-loop/remember-me/remme/log"
 	"github.com/while-loop/remember-me/remme/manager"
 	"github.com/while-loop/remember-me/remme/storage/stub"
 	"github.com/while-loop/remember-me/remme/util"
@@ -42,12 +42,8 @@ var changeCmd = cli.Command{
 		}
 
 		app := remme.NewApp(stub.New(), webservice.Services())
-		statusChan := make(chan changer.Status)
-		go app.ChangePasswords(statusChan, man, util.DefaultPasswdFunc)
-
-		for status := range statusChan {
-			fmt.Fprintln(c.App.Writer, status)
-		}
+		jobId := app.ChangePasswords(man, util.DefaultPasswdFunc)
+		log.Info("Job ID", jobId)
 		return nil
 	},
 }

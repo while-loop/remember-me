@@ -80,7 +80,6 @@ func (f *imgurWebservice) changePassword(browsr *browser.Browser, email, oldpass
 	}
 
 	body := browsr.Body()
-	log.Debug(body)
 	fm, err := browsr.Form("form[id=password-form]")
 	if err != nil {
 		return webservice.ParseError{Hostname: fUrl.String() + ": chpwd_form"}
