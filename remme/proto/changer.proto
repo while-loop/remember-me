@@ -1,5 +1,4 @@
 syntax = "proto3";
-
 package changer;
 
 option java_multiple_files = true;
@@ -9,7 +8,7 @@ option java_outer_classname = "ChangerProto";
 // The greeting service definition.
 service Changer {
     // Sends a greeting
-    rpc ChangePassword (ChangeRequest) returns (stream Status) {
+    rpc ChangePassword (ChangeRequest) returns (ChangeReply) {
     }
     rpc GetManagers (ManagersRequest) returns (ManagersReply) {
     }
@@ -41,24 +40,8 @@ message ChangeRequest {
     PasswdConfig passwdConfig = 4;
 }
 
-// Status interface
-// Start status
-// Job start status (with subJob ID)
-// Job Error status
-// Job finish status
-// Finish status
-message Status {
-    enum Type {
-        JOB_START = 0;
-        TASK_START = 1;
-        TASK_ERROR = 2;
-        TASK_FINISH = 3;
-        JOB_FINISH = 4;
-    }
-    Type type = 1;
-    uint64 jobId = 2;
-    uint64 taskId = 3;
-    string hostname = 4;
-    string email = 5;
-    string msg = 6;
+// The request message containing the user's name.
+message ChangeReply {
+    uint64 jobId = 1;
+    uint64 startTime = 2;
 }

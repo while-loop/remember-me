@@ -3,12 +3,13 @@ package remme
 import (
 	"fmt"
 	"log"
-	"math/rand"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/while-loop/remember-me/remme/api/services/v1/changer"
+	"math/rand"
+
+	"github.com/while-loop/remember-me/remme/api/services/v1/record"
 	"github.com/while-loop/remember-me/remme/manager"
 	"github.com/while-loop/remember-me/remme/storage"
 	"github.com/while-loop/remember-me/remme/storage/stub"
@@ -16,10 +17,20 @@ import (
 	"github.com/while-loop/remember-me/remme/webservice"
 )
 
+func init() {
+	rand.Seed(time.Now().Unix())
+}
+
 type App struct {
 	services  map[string]webservice.Webservice
 	Datastore storage.DataStore
+	jobsChan  chan jobRequest
+	closeChan chan bool
 }
+
+const (
+	workers = 10
+)
 
 var (
 	emptyHost       = fmt.Errorf("empty host")
@@ -27,47 +38,77 @@ var (
 	proxyParseError = fmt.Errorf("unable to change password")
 )
 
+type jobRequest struct {
+	JobID      uint64
+	Manager    manager.Manager
+	PasswdFunc util.PasswdFunc
+}
+
 func NewApp(datastore storage.DataStore, services map[string]webservice.Webservice) *App {
 	if datastore == nil {
-		datastore = &stub.StubDB{}
+		datastore = stub.New()
 	}
 
-	return &App{
+	app := &App{
 		Datastore: datastore,
 		services:  services,
+		jobsChan:  make(chan jobRequest),
+		closeChan: make(chan bool),
+	}
+
+	go app.run()
+	return app
+}
+
+func (a *App) run() {
+	for i := 0; i < workers; i++ {
+		go a.worker()
+	}
+
+	<-a.closeChan
+	log.Println("app close chan recvd")
+
+	close(a.jobsChan)
+	close(a.closeChan)
+}
+
+func (a *App) ChangePasswords(mngr manager.Manager, passwdFunc util.PasswdFunc) uint64 {
+	jId := rand.Uint64()
+	a.jobsChan <- jobRequest{JobID: jId, Manager: mngr, PasswdFunc: passwdFunc}
+	return jId
+}
+
+func (a *App) worker() {
+	for j := range a.jobsChan {
+		a.chPasswds(j)
 	}
 }
 
-// TODO out = websocket/file/stdout/etc
-// TODO chan out
-// Status interface
-// Start status
-// Job start status (with subJob ID)
-// Job Error status
-// Job finish status
-// Finish status
-func (a *App) ChangePasswords(out chan<- changer.Status, mngr manager.Manager, passwdFunc util.PasswdFunc) {
-	jId := rand.New(rand.NewSource(time.Now().UnixNano())).Uint64()
-	defer func() {
-		out <- newStatus(jId, 0, changer.Status_JOB_FINISH, mngr.GetEmail(), "", "")
-		close(out)
-	}()
-
-	sites := mngr.GetSites()
-
+func (a *App) chPasswds(job jobRequest) {
+	sites := job.Manager.GetSites()
 	// mutex when updating log record
 	wg := sync.WaitGroup{}
 	lr, err := a.Datastore.AddLog(&storage.LogRecord{
 		Time:       time.Now(),
-		JobID:      jId,
-		User:       mngr.GetEmail(),
+		JobID:      job.JobID,
+		User:       job.Manager.GetEmail(),
 		TotalSites: uint64(len(sites)),
 	})
 	if err != nil {
 		log.Println("Unable to save log", err, lr)
 	}
-	out <- newStatus(lr.JobID, 0, changer.Status_JOB_START, mngr.GetEmail(), "",
-		fmt.Sprintf("Total sites: %d", lr.TotalSites))
+
+	if lr, err := a.Datastore.AddEvent(record.JobEvent{
+		JobId:     lr.JobID,
+		TaskId:    0,
+		Type:      record.JobEvent_JOB_START,
+		Email:     job.Manager.GetEmail(),
+		Hostname:  "",
+		Timestamp: uint64(time.Now().Unix()),
+		Msg:       fmt.Sprintf("Total sites: %d", lr.TotalSites),
+	}); err != nil {
+		log.Printf("failed to send log record %v\n", lr)
+	}
 
 	taskId := uint64(0)
 	for _, site := range sites {
@@ -76,18 +117,36 @@ func (a *App) ChangePasswords(out chan<- changer.Status, mngr manager.Manager, p
 		}
 
 		service, err := a.searchService(site.Hostname)
-
 		taskId++
-		out <- newStatus(lr.JobID, taskId, changer.Status_TASK_START, site.Email, site.Hostname, "")
+		if lr, err := a.Datastore.AddEvent(record.JobEvent{
+			JobId:     lr.JobID,
+			TaskId:    taskId,
+			Type:      record.JobEvent_TASK_START,
+			Email:     site.Email,
+			Hostname:  site.Hostname,
+			Timestamp: uint64(time.Now().Unix()),
+		}); err != nil {
+			log.Printf("failed to send log record %v\n", lr)
+		}
 
 		if err != nil {
-			lr.AddFailure(site.Hostname, site.Email, "Unsupported website", Version)
-			out <- newStatus(lr.JobID, taskId, changer.Status_TASK_ERROR, site.Email, site.Hostname, "Unsupported website")
+			if lr, err := a.Datastore.AddEvent(record.JobEvent{
+				JobId:     lr.JobID,
+				TaskId:    taskId,
+				Type:      record.JobEvent_TASK_ERROR,
+				Email:     site.Email,
+				Hostname:  site.Hostname,
+				Timestamp: uint64(time.Now().Unix()),
+				Msg:       "Unsupported website",
+				Version:   Version,
+			}); err != nil {
+				log.Printf("failed to send log record %v\n", lr)
+			}
 			continue
 		}
 
 		wg.Add(1)
-		go chPasswd(out, &wg, service, mngr, site, lr, taskId)
+		go a.chPasswd(job, &wg, service, site, taskId)
 	}
 
 	wg.Wait()
@@ -98,48 +157,56 @@ func (a *App) ChangePasswords(out chan<- changer.Status, mngr manager.Manager, p
 	}
 }
 
-func newStatus(jId, tId uint64, typ changer.Status_Type, email, hname, msg string) changer.Status {
-	return changer.Status{JobId: jId, TaskId: tId, Type: typ, Email: email, Hostname: hname, Msg: msg}
-}
-
-func chPasswd(out chan<- changer.Status, wg *sync.WaitGroup, goservice webservice.Webservice,
-	mngr manager.Manager, gosite manager.Site, lr *storage.LogRecord, goTaskId uint64) {
-
-	lr.IncTries(1)
-	log.Println("Changing password for:", gosite.Hostname, gosite.Email)
-	newpasswd := gosite.Password //passwdFunc()) TODO
+func (a *App) chPasswd(job jobRequest, wg *sync.WaitGroup, webservice webservice.Webservice, site manager.Site, taskId uint64) {
+	log.Println("Changing password for:", site.Hostname, site.Email)
+	newpasswd := site.Password //job.passwdFunc() TODO
 	defer wg.Done()
 
-	err := goservice.ChangePassword(gosite.Email, gosite.Password, newpasswd)
+	event := record.JobEvent{
+		JobId:    job.JobID,
+		TaskId:   taskId,
+		Type:     record.JobEvent_TASK_ERROR,
+		Email:    site.Email,
+		Hostname: site.Hostname,
+		Msg:      "",
+		Version:  Version,
+	}
+
+	err := webservice.ChangePassword(site.Email, site.Password, newpasswd)
 	if err != nil {
 		log.Println(err)
-		lr.AddFailure(gosite.Hostname, gosite.Email, err.Error(), Version)
-		err = proxyParseError // user-friendly error
-		out <- newStatus(lr.JobID, goTaskId, changer.Status_TASK_ERROR, gosite.Email, gosite.Hostname, err.Error())
+		event.Msg = err.Error()
+		event.Timestamp = uint64(time.Now().Unix())
+		if _, err := a.Datastore.AddEvent(event); err != nil {
+			log.Printf("failed to send log record %v\n", event)
+		}
 		return
 	}
 
-	err = mngr.SavePassword(gosite.Hostname, gosite.Email, newpasswd)
+	err = job.Manager.SavePassword(site.Hostname, site.Email, newpasswd)
 	if err != nil {
-		log.Printf("Failed to save password for %s %s.. reverting: %s\n", gosite.Hostname, gosite.Email, err)
-		lr.AddFailure(gosite.Hostname, gosite.Email, "Failed to save new password", Version)
-		err = goservice.ChangePassword(gosite.Email, newpasswd, gosite.Password)
+		log.Printf("Failed to save password for %s %s.. reverting: %s\n", site.Hostname, site.Email, err)
+		err = webservice.ChangePassword(site.Email, newpasswd, site.Password)
 		if err != nil {
 			// oh shit boi. failed to revert password
-			log.Printf("Failed to revert back to old password for %s %s.. %s\n", gosite.Hostname, gosite.Email, err)
-			lr.AddFailure(gosite.Hostname, gosite.Email, "Failed to revert back to old password", Version)
-			if _, ok := err.(webservice.ParseError); ok {
-				err = proxyParseError // user-friendly error
+			log.Printf("Failed to revert back to old password for %s %s.. %s\n", site.Hostname, site.Email, err)
+			event.Msg = "Failed to revert back to old password"
+			event.Timestamp = uint64(time.Now().Unix())
+			if _, err := a.Datastore.AddEvent(event); err != nil {
+				log.Printf("failed to send log record %v\n", event)
 			}
-
 			// TODO send email to customer with new password?
-			out <- newStatus(lr.JobID, goTaskId, changer.Status_TASK_ERROR, gosite.Email, gosite.Hostname, "Failed to revert back to old password")
 			return
 		}
 	}
 
-	log.Println("Password changed for:", gosite.Hostname, gosite.Email)
-	out <- newStatus(lr.JobID, goTaskId, changer.Status_TASK_FINISH, gosite.Email, gosite.Hostname, "")
+	log.Println("Password changed for:", site.Hostname, site.Email)
+	event.Msg = ""
+	event.Timestamp = uint64(time.Now().Unix())
+	event.Type = record.JobEvent_TASK_FINISH
+	if _, err := a.Datastore.AddEvent(event); err != nil {
+		log.Printf("failed to send log record %v\n", event)
+	}
 }
 
 func (a *App) searchService(hostname string) (webservice.Webservice, error) {

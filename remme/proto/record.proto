@@ -10,6 +10,9 @@ option java_outer_classname = "RecordProto";
 service Record {
     rpc GetRecord (RecordRequest) returns (LogRecord) {
     }
+
+    rpc TailEvents (RecordRequest) returns (stream JobEvent) {
+    }
 }
 
 message RecordRequest {
@@ -31,4 +34,28 @@ message LogRecord {
     uint64 tries = 4;
     uint64 totalSites = 5;
     repeated Failure failures = 6;
+}
+
+// Status interface
+// Start status
+// Job start status (with subJob ID)
+// Job Error status
+// Job finish status
+// Finish status
+message JobEvent {
+    enum Type {
+        JOB_START = 0;
+        TASK_START = 1;
+        TASK_ERROR = 2;
+        TASK_FINISH = 3;
+        JOB_FINISH = 4;
+    }
+    Type type = 1;
+    uint64 jobId = 2;
+    uint64 taskId = 3;
+    uint64 timestamp = 4;
+    string hostname = 5;
+    string email = 6;
+    string msg = 7;
+    string version = 8;
 }

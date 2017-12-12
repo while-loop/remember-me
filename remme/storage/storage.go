@@ -1,13 +1,15 @@
 package storage
 
 import (
-	"github.com/while-loop/remember-me/remme/api/services/v1/record"
 	"sync"
 	"time"
+
+	"github.com/while-loop/remember-me/remme/api/services/v1/record"
 )
 
 type DataStore interface {
 	AddLog(record *LogRecord) (*LogRecord, error)
+	AddEvent(event record.JobEvent) (record.JobEvent, error)
 	UpdateLog(record *LogRecord) (*LogRecord, error)
 	GetLog(jobId uint64) (*LogRecord, error)
 }

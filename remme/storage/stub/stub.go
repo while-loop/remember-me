@@ -1,22 +1,27 @@
 package stub
 
 import (
+	"github.com/while-loop/remember-me/remme/api/services/v1/record"
 	"github.com/while-loop/remember-me/remme/storage"
 )
 
-type StubDB struct {
+type stubDB struct {
 }
 
-func New() storage.DataStore{
-	return &StubDB{}
+func New() storage.DataStore {
+	return &stubDB{}
 }
 
-func (s *StubDB) AddLog(record *storage.LogRecord) (*storage.LogRecord, error) {
+func (s *stubDB) AddLog(record *storage.LogRecord) (*storage.LogRecord, error) {
 	return record, nil
 }
-func (s *StubDB) UpdateLog(record *storage.LogRecord) (*storage.LogRecord, error) {
+func (s *stubDB) UpdateLog(record *storage.LogRecord) (*storage.LogRecord, error) {
 	return record, nil
 }
-func (s *StubDB) GetLog(jobId uint64) (*storage.LogRecord, error) {
+func (s *stubDB) GetLog(jobId uint64) (*storage.LogRecord, error) {
 	return nil, nil
+}
+
+func (s *stubDB) AddEvent(event record.JobEvent) (record.JobEvent, error) {
+	panic("implement me")
 }
