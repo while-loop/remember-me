@@ -2,7 +2,6 @@ Remember Me
 ==========
 
 <p align="center">
-  <img src="https://cdn.meme.am/instances/48462683.jpg">
   <br><br><br>
   <a href="https://godoc.org/github.com/while-loop/remember-me"><img src="https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square"></a>
   <a href="https://travis-ci.org/while-loop/remember-me"><img src="https://img.shields.io/travis/while-loop/remember-me.svg?style=flat-square"></a>
